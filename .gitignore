@@ -1,7 +1,1 @@
-target
-build
-.gradle
-.classpath
-.project
-.settings
-.env
+.DS_Store
