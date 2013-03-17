@@ -1,4 +1,4 @@
-package resources;
+package com.stonepeak.monkey.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
