@@ -15,6 +15,11 @@
 			<version>1.11</version>
 		</dependency>
 		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
             <version>7.5.4.v20111024</version>
