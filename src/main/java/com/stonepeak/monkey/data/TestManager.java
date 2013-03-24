@@ -1,11 +1,23 @@
 package com.stonepeak.monkey.data;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class TestManager {
 	
@@ -92,17 +104,18 @@ public class TestManager {
 	
 	/**
 	 * Runs a specific test case from the app under test
-	 * @param testCaseName the name of the test case eg TestSuite.TestCase
+	 * @param gtestFilter the filter used to specify which tests to run eg TestSuite.TestCase for one test.
+	 * 			separate multiple expressions by colons - see gtest --gtest_filter docs
 	 * @return GUID of test run, used to uniquely identify a set of results
 	 */
-	public String runTestCase(String testCaseName)
+	public String runTests(String gtestFilter)
 	{
 		String guid = UUID.randomUUID().toString();
 		StringBuilder testCommandBuilder = new StringBuilder();
 		testCommandBuilder.append(gtestAppPath).append(" ")
-			.append(RUN_TEST_ARG).append("=").append(testCaseName).append(" ")
+			.append(RUN_TEST_ARG).append("=").append(gtestFilter).append(" ")
 			.append(OUTPUT_XML_ARG).append(":").append(guid).append(".xml");
-		System.out.println("Running:\n" + testCommandBuilder.toString());
+		//System.out.println("Running:\n" + testCommandBuilder.toString());
 		try {
 			Process gtestApp = Runtime.getRuntime().exec(testCommandBuilder.toString());
 			// wait for the gtest app to terminate
@@ -115,6 +128,71 @@ public class TestManager {
 			e.printStackTrace();
 		}
 		return guid;
+	}
+	
+	/**
+	 * Query the XML test results using XPath, and return a TestCaseResult list
+	 * @param testRunId
+	 * @return
+	 */
+	public List<TestCaseResult> getTestResults(String testRunId)
+	{
+		List<TestCaseResult> resultList = new ArrayList<TestCaseResult>();
+		
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "//testcase[@status='run']";	// select all testcase nodes with attribute status="run"
+		InputSource inputSource = new InputSource(testRunId + ".xml");
+		try {
+			NodeList testCaseNodes = (NodeList) xpath.evaluate(expression, inputSource, XPathConstants.NODESET);
+			
+			// next iterate over the nodes, pull out the data and create a TestCaseResult from it.
+			// involves a bit of fiddly dom traversal unfortunately
+			for (int i = 0; i < testCaseNodes.getLength(); i++)
+			{
+				Node n = testCaseNodes.item(i);
+				NamedNodeMap attribs = n.getAttributes();
+				
+				TestCaseResult testResult = new TestCaseResult();
+				testResult.setSuiteName(attribs.getNamedItem("classname").getNodeValue());
+				testResult.setCaseName(attribs.getNamedItem("name").getNodeValue());
+				testResult.setElapsedTime(Double.parseDouble(attribs.getNamedItem("time").getNodeValue()));
+				testResult.setPassed(true);
+				
+				if (n.hasChildNodes())
+				{
+					NodeList childNodes = n.getChildNodes();
+					for (int j = 0; j < childNodes.getLength(); j++)
+					{
+						if (childNodes.item(j).getNodeName().equals("failure"))
+						{
+							testResult.setPassed(false);
+							testResult.setErrorMessage(childNodes.item(j).getTextContent());
+						}
+					}
+				}
+				
+				resultList.add(testResult);
+			}
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO implement
+			e.printStackTrace();
+		} catch (DOMException e) {
+			// TODO implement
+			e.printStackTrace();
+		} finally {
+			// clean up test result file
+			File file = new File(testRunId + ".xml");
+			file.delete();
+		}
+		
+		if (resultList.isEmpty())
+			resultList = null; // prefer to return null over an empty list
+		
+		return resultList;
 	}
 
 }

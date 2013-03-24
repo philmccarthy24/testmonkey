@@ -6,9 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
 
 import com.stonepeak.monkey.data.GlobalConfig;
 import com.stonepeak.monkey.data.TestCaseResult;
@@ -31,17 +29,18 @@ public class TestResource {
     }
     
     /**
-     * Gets the result of a specific test case
+     * Gets the result of test(s) depending on gtest filter specified
+     * @param filter
      * @return
      */
-    @GET @Path("/{testcase}")
+    @GET @Path("/results/{gtestfilter}")
     @Produces(MediaType.APPLICATION_JSON)
-    public TestCaseResult handleTestCase(@PathParam("testcase") String testCase) {
-    	// run the specific test
-    	String testRunId = testManager.runTestCase(testCase);
+    public List<TestCaseResult> handleTestResults(@PathParam("gtestfilter") String filter) {
+    	// run the test
+    	String testRunId = testManager.runTests(filter);
     	
     	// convert the results to POJOs
-    	//TestCaseResult result = testManager.get
-    	return null;
+    	List<TestCaseResult> results = testManager.getTestResults(testRunId);
+    	return results;
     }
 }
