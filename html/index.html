@@ -1,9 +1,19 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<script type="text/javascript" xlink:href="loader.js" />
+		<!-- business logic in monkey business script -->
+		<script type="text/javascript" src="monkeybusiness.js"></script>
+		<link rel="stylesheet" href="monkeystyle.css">
 	</head>
-	<body onload="Loader.onDocumentLoad(evt)">
-		<p>Hello you little beauty! static content now being served!!!</p>
+	<body>
+		<h1>TestMonkey Google Test web runner</h1>
+		<div id="global_controls">
+			<a id="SelectAllTestsLink" href="">Select all tests</a>
+			<a id="UnselectAllTestsLink" href="">Deselect all Tests</a>
+			<a id="RunAllTestsLink" href="">Run selected tests</a>
+		</div>
+		<div id="tests">
+			<!-- html to be generated here -->
+		</div>
 	</body>
 </html>

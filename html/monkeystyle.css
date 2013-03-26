@@ -1,0 +1,6 @@
+tr.enabled {
+	background-color: white;
+}
+tr.disabled {
+	background-color: rgb(232,232,232);
+}

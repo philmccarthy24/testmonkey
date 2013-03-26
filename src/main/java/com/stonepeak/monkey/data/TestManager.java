@@ -89,8 +89,7 @@ public class TestManager {
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Could not run google test app: \"" + gtestAppPath + "\" - did you specify the correct file?");
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
