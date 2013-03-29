@@ -12,8 +12,9 @@ import com.stonepeak.monkey.data.GlobalConfig;
 import com.stonepeak.monkey.data.TestCaseResult;
 import com.stonepeak.monkey.data.TestManager;
 import com.stonepeak.monkey.data.TestSuite;
+import com.sun.jersey.api.provider.jaxb.XmlHeader;
 
-@Path("/tests")
+@Path("/")
 public class TestResource {
 	
 	private TestManager testManager = new TestManager(GlobalConfig.getGtestAppPath());
@@ -22,9 +23,20 @@ public class TestResource {
 	 * Main tests handler - gets list of tests from executable
 	 * @return
 	 */
-    @GET
+    @GET @Path("/tests/json")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TestSuite> handleTests() {
+    	return testManager.getTests();
+    }
+    
+	/**
+	 * Main tests handler - gets list of tests from executable
+	 * @return
+	 */
+    @GET @Path("/tests/xml")
+    @Produces(MediaType.APPLICATION_XML)
+    @XmlHeader("<?xml-stylesheet type=\"text/xsl\" href=\"/tests.xsl\"?>")
+    public List<TestSuite> handleTestsAsXml() {
     	return testManager.getTests();
     }
     

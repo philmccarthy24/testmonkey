@@ -3,9 +3,19 @@ package com.stonepeak.monkey.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="test")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TestSuite {
 	
+	public TestSuite() {}
+	
+	@XmlElement(name="testsuite")
 	private String suiteName;
+	
+	@XmlElementWrapper(name="testcases")
+	@XmlElement(name="testcase")
 	private List<String> testCases = new ArrayList<String>();
 	
 	/**

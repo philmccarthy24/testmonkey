@@ -3,7 +3,7 @@
 // Code to run on page load
 window.onload = function onPageLoad() {
 	// Call rest get on tests
-	doAjaxGet("/rest/tests", function (testSuites) {
+	doAjaxGet("/rest/tests/json", function (testSuites) {
 		// asynchronous ajax call has returned
 		if (!Array.isArray(testSuites))
 		{
@@ -12,6 +12,7 @@ window.onload = function onPageLoad() {
 			return;
 		}
 		
+		/*
 		// we have an array of test suites back, so construct html tables
 		var testHtml = "";
 		for (var i = 0; i < testSuites.length; i++)
@@ -37,6 +38,7 @@ window.onload = function onPageLoad() {
 		
 		// put the html into the dom
 		document.getElementById('tests').innerHTML = testHtml;
+		*/
 		
 		// set click handlers for top link controls
 		addClickHandlerById("SelectAllTestsLink", function() { updateTestsSelectionState("tests", true); });
@@ -46,7 +48,7 @@ window.onload = function onPageLoad() {
 		// set click handlers for per-test suite controls
 		for (var i = 0; i < testSuites.length; i++)
 		{
-			var suiteName = testSuites[i].suiteName;
+			var suiteName = testSuites[i].testsuite;
 			var suiteEnableLinkId = "Select" + suiteName + "Suite";
 			var suiteDisableLinkId = "Unselect" + suiteName + "Suite";
 			// now for some hairy syntax to preserve scope of suiteName in closures
@@ -62,7 +64,7 @@ window.onload = function onPageLoad() {
 												})(suiteName));
 			
 			// set click handlers for per test controls
-			var testCases = testSuites[i].testCases;
+			var testCases = testSuites[i].testcases;
 			for (var j = 0; j < testCases.length; j++)
 			{
 				var parentRowId = suiteName + "." + testCases[j];
