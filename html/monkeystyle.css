@@ -1,6 +1,96 @@
-tr.enabled {
+
+
+/* Default styling for run column: the play icon */
+td:nth-child(5) {
+    background: url(images/play32.png);
+    background-repeat: no-repeat;
+    text-indent:-9999px;
+    height:32px;
+    width:32px;
+}
+
+/* display question mark in results column by default */
+td:nth-child(6) {
+    background: url(images/question32.png);
+    background-repeat: no-repeat;
+    height:32px;
+    width:32px;
+}
+
+/* Grey out play icon when row class is disabled */
+tr.disabled > td:nth-child(5) {
+    background: url(images/playdisabled32.png);
+    background-repeat: no-repeat;
+    text-indent:-9999px;
+    height:32px;
+    width:32px;
+}
+
+/* Display disabled icon in status column when row class is disabled */
+tr.disabled > td:nth-child(6) {
+    background: url(images/disabled32.png);
+    background-repeat: no-repeat;
+    height:32px;
+    width:32px;
+}
+
+/* update loading icon in Run column : animated gif */
+tr.running > td:nth-child(5) {
+	background: url(images/loader32.gif);
+	background-repeat: no-repeat;
+	height:32px;
+    width:32px;
+}
+
+/* Display tick in results column when test passes */
+tr.passed > td:nth-child(6) {
+	background: url(images/tick32.png);
+	background-repeat: no-repeat;
+	height:32px;
+    width:32px;
+}
+
+/* Display cross in results column when test fails */
+tr.failed > td:nth-child(6) {
+	background: url(images/cross32.png);
+	background-repeat: no-repeat;
+	height:32px;
+    width:32px;
+}
+
+
+/* Background colour styling for rows */
+tr > td {
 	background-color: white;
 }
-tr.disabled {
-	background-color: rgb(232,232,232);
+
+tr.disabled > td {
+	background-color: rgb(240,240,240);
 }
+tr.disabled > td:nth-child(5) {
+	background-color: rgb(240,240,240);
+}
+tr.disabled > td:nth-child(6) {
+	background-color: rgb(240,240,240);
+}
+
+tr.passed > td {
+	background-color: rgb(200,255,200);
+}
+tr.passed > td:nth-child(5) {
+	background-color: rgb(200,255,200);
+}
+tr.passed > td:nth-child(6) {
+	background-color: rgb(200,255,200);
+}
+
+tr.failed > td {
+	background-color: red;
+}
+tr.failed > td:nth-child(5) {
+	background-color: red;
+}
+tr.failed > td:nth-child(6) {
+	background-color: red;
+}
+

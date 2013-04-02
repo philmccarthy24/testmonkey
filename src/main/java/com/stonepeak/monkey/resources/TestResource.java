@@ -13,7 +13,7 @@ import com.stonepeak.monkey.data.TestCaseResult;
 import com.stonepeak.monkey.data.TestManager;
 import com.stonepeak.monkey.data.TestSuite;
 
-@Path("/tests")
+@Path("/")
 public class TestResource {
 	
 	private TestManager testManager = new TestManager(GlobalConfig.getGtestAppPath());
@@ -22,7 +22,7 @@ public class TestResource {
 	 * Main tests handler - gets list of tests from executable
 	 * @return
 	 */
-    @GET
+    @GET @Path("/tests")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TestSuite> handleTests() {
     	return testManager.getTests();
