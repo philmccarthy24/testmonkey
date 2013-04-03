@@ -3,10 +3,18 @@
 /* Default styling for run column: the play icon */
 td:nth-child(5) {
     background: url(images/play32.png);
+    position: relative;
     background-repeat: no-repeat;
-    text-indent:-9999px;
     height:32px;
     width:32px;
+}
+
+td:nth-child(5) > a { 
+	position: absolute;
+	top: 0px;
+	width: 32px; 
+	height: 32px; 
+	background-color: transparent;
 }
 
 /* display question mark in results column by default */
@@ -21,7 +29,6 @@ td:nth-child(6) {
 tr.disabled > td:nth-child(5) {
     background: url(images/playdisabled32.png);
     background-repeat: no-repeat;
-    text-indent:-9999px;
     height:32px;
     width:32px;
 }

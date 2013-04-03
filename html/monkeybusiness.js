@@ -25,14 +25,14 @@ window.onload = function onPageLoad() {
 			testHtml += "<a id=\"Select" + suiteName + "Suite\" href=\"\">Select all tests in suite</a>";
 			testHtml += "<a id=\"Unselect" + suiteName + "Suite\" href=\"\">Deselect all tests in suite</a>";
 			testHtml += "<a id=\"Run" + suiteName + "Suite\" href=\"\">Run selected tests in suite</a>";
-			testHtml += "<table id=\"" + suiteName + "\"><thead><tr><th>Enabled</th><th>Test name</th><th>Last Ran</th><th>Running time</th><th>   </th><th>Result</th><th>Messages</th></tr></thead>";
+			testHtml += "<table id=\"" + suiteName + "\"><thead><tr><th>Enabled</th><th>Test name</th><th>Last Ran</th><th>Running time</th><th>Run</th><th>Result</th><th>Messages</th></tr></thead>";
 			var testCases = testSuites[i].testCases;
 			if (testCases.length > 0)
 				testHtml += "<tbody>";
 			for (var j = 0; j < testCases.length; j++)
 			{
 				var testName = suiteName + "." + testCases[j];
-				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" name=\"" + testName + "\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run" + testName + "\" href=\"\">Run</a></td><td>Not run</td><td></td></tr>";
+				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" name=\"" + testName + "\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run" + testName + "\" href=\"\"></a></td><td></td><td></td></tr>";
 			}
 			if (testCases.length > 0)
 				testHtml += "</tbody>";
@@ -76,18 +76,25 @@ window.onload = function onPageLoad() {
 			var testCases = testSuites[i].testCases;
 			for (var j = 0; j < testCases.length; j++)
 			{
-				var parentRowId = suiteName + "." + testCases[j];
+				var testCaseId = suiteName + "." + testCases[j];
 				// get table row node
-				var row = document.getElementById(parentRowId);
+				var row = document.getElementById(testCaseId);
 				// get row checkbox
 				var checkbox = row.querySelector("input[type=checkbox]");
-				// add click handler
+				// add click handler to checkbox
 				addClickHandlerToElement(checkbox, ( function (cbvar, pridvar) {
 					return function() {
-						//onClickCheckbox(cbvar, pridvar);
 						updateTestsSelectionState(pridvar, cbvar.checked);
 					};
-				})(checkbox, parentRowId));
+				})(checkbox, testCaseId));
+				
+				// add click handler to run link in 5th td
+				var runLinkId = "Run" + testCaseId;
+				addClickHandlerById(runLinkId, ( function (preserveVarScope) {
+					return function() {
+						runSelectedTests(preserveVarScope);
+					};
+				})(testCaseId));
 			}
 		}
 	});
