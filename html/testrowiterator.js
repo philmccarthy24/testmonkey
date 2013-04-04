@@ -78,28 +78,4 @@ TestRowIterator = function () {
 		return chkbox.checked;
 	};
 	
-	/**
-	 * Action to tick row checkbox and set row style to be enabled
-	 * @param row
-	 */
-	this.tickCheckboxAndSetRowStyleEnabled = function(row) {
-		// update checkbox state
-		var chkbox = row.querySelector("input[type=checkbox]");
-		chkbox.checked = true;
-		// update row style to reflect selection state
-		row.setAttribute("class", "enabled"); 
-	};
-	
-	/**
-	 * Action to untick row checkbox and set row style to be disabled
-	 * @param row
-	 */
-	this.untickCheckboxAndSetRowStyleDisabled = function(row) {
-		// update checkbox state
-		var chkbox = row.querySelector("input[type=checkbox]");
-		chkbox.checked = false;
-		// update row style to reflect selection state
-		row.setAttribute("class", "disabled"); 
-	};
-	
 };

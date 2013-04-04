@@ -22,9 +22,9 @@ window.onload = function onPageLoad() {
 		{
 			var suiteName = testSuites[i].suiteName;
 			testHtml += "<h2>" + suiteName + "</h2>";
-			testHtml += "<a id=\"Select" + suiteName + "Suite\" href=\"\">Select all tests in suite</a>";
-			testHtml += "<a id=\"Unselect" + suiteName + "Suite\" href=\"\">Deselect all tests in suite</a>";
-			testHtml += "<a id=\"Run" + suiteName + "Suite\" href=\"\">Run selected tests in suite</a>";
+			testHtml += "<a id=\"Select." + suiteName + "\" href=\"\">Select all tests in suite</a>";
+			testHtml += "<a id=\"Unselect." + suiteName + "\" href=\"\">Deselect all tests in suite</a>";
+			testHtml += "<a id=\"Run." + suiteName + "\" href=\"\">Run selected tests in suite</a>";
 			testHtml += "<table id=\"" + suiteName + "\"><thead><tr><th>Enabled</th><th>Test name</th><th>Last Ran</th><th>Running time</th><th>Run</th><th>Result</th><th>Messages</th></tr></thead>";
 			var testCases = testSuites[i].testCases;
 			if (testCases.length > 0)
@@ -32,7 +32,7 @@ window.onload = function onPageLoad() {
 			for (var j = 0; j < testCases.length; j++)
 			{
 				var testName = suiteName + "." + testCases[j];
-				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" name=\"" + testName + "\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run" + testName + "\" href=\"\"></a></td><td></td><td></td></tr>";
+				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run." + testName + "\" href=\"\">Run</a></td><td></td><td></td></tr>";
 			}
 			if (testCases.length > 0)
 				testHtml += "</tbody>";
@@ -42,118 +42,101 @@ window.onload = function onPageLoad() {
 		// put the html into the dom
 		document.getElementById('tests').innerHTML = testHtml;
 		
-		// set click handlers for top link controls
-		addClickHandlerById("SelectAllTestsLink", function() { updateTestsSelectionState("tests", true); });
-		addClickHandlerById("UnselectAllTestsLink", function() { updateTestsSelectionState("tests", false); });
-		addClickHandlerById("RunAllTestsLink", function() { runSelectedTests("tests"); });
-		
-		// set click handlers for per-test suite controls
-		for (var i = 0; i < testSuites.length; i++)
+		// add click handler to all hyperlinks
+		var links = document.querySelectorAll("a");
+		for (var i = 0; i < links.length; i++)
 		{
-			var suiteName = testSuites[i].suiteName;
-			var suiteEnableLinkId = "Select" + suiteName + "Suite";
-			var suiteDisableLinkId = "Unselect" + suiteName + "Suite";
-			var suiteRunLinkId = "Run" + suiteName + "Suite";
-			// now for some hairy syntax to preserve scope of suiteName in closures
-			// this might be able to be circumvented by using arguments var arg array and function.apply
-			addClickHandlerById(suiteEnableLinkId, ( function (preserveVarScope) {
-													return function() {
-														updateTestsSelectionState(preserveVarScope, true);
-													};
-												})(suiteName));
-			addClickHandlerById(suiteDisableLinkId, ( function (preserveVarScope) {
-													return function() {
-														updateTestsSelectionState(preserveVarScope, false);
-													};
-												})(suiteName));
-			addClickHandlerById(suiteRunLinkId, ( function (preserveVarScope) {
-													return function() {
-														runSelectedTests(preserveVarScope);
-													};
-												})(suiteName));
-			
-			// set click handlers for per test controls
-			var testCases = testSuites[i].testCases;
-			for (var j = 0; j < testCases.length; j++)
-			{
-				var testCaseId = suiteName + "." + testCases[j];
-				// get table row node
-				var row = document.getElementById(testCaseId);
-				// get row checkbox
-				var checkbox = row.querySelector("input[type=checkbox]");
-				// add click handler to checkbox
-				addClickHandlerToElement(checkbox, ( function (cbvar, pridvar) {
-					return function() {
-						updateTestsSelectionState(pridvar, cbvar.checked);
-					};
-				})(checkbox, testCaseId));
-				
-				// add click handler to run link in 5th td
-				var runLinkId = "Run" + testCaseId;
-				addClickHandlerById(runLinkId, ( function (preserveVarScope) {
-					return function() {
-						runSelectedTests(preserveVarScope);
-					};
-				})(testCaseId));
-			}
+			addClickHandler(links[i], linkClickHandler);
 		}
+		// add click handler to all checkboxes
+		var chkboxes = document.querySelectorAll("input[type=checkbox]");
+		for (var i = 0; i < chkboxes.length; i++)
+		{
+			addClickHandler(chkboxes[i], checkboxClickHandler);
+		}
+		
 	});
 };
 
 /**
- * Adds the specified handler function to the click event of the element with
- * id elementId. Convenience wrapper for addClickHandlerToElement
- * @param elementId
- * @param handlerFunction
+ * Link click handler function that determines the
+ * type of link clicked on (by the id string) and
+ * performs the appropriate action
+ * @param link - the link element clicked on
+ * @param evt - the click event
  */
-function addClickHandlerById(elementId, handlerFunction)
+function linkClickHandler(link, evt)
 {
-	var element = document.getElementById(elementId);
-	addClickHandlerToElement(element, handlerFunction);
+	// prevent default action for hyperlinks - we don't
+	// want page refreshing
+	evt.preventDefault();
+	// pull out command and target node id from clicked element id
+	var linkId = link.getAttribute("id");
+	var cmd = linkId.replace(/^(.+?)\..*$/, "$1");
+	var targetNodeId = linkId.replace(/^.*?\.(.*)$/, "$1");
+	if (cmd === "Run")
+	{
+		runSelectedTests(targetNodeId);
+	} else {
+		if (cmd !== "Select" && cmd !== "Unselect")
+		{
+			// unknown command: error out
+			alert ("Error - link id not recognised!");
+			return;
+		}
+		// iterate over test rows under specified target, set checkbox
+		// state and row css enabled or disabled state depending on
+		// type of link
+		testRowIterator.forEachTestUnderElement(
+			targetNodeId, 
+			testRowIterator.noFilter, 	// operate on all rows
+			function(row) {
+				// update checkbox state
+				var chkbox = row.querySelector("input[type=checkbox]");
+				chkbox.checked = (cmd === "Select");
+				// update row style to reflect selection state
+				row.setAttribute("class", cmd === "Select" ? "enabled" : "disabled"); 
+			});
+	}
+}
+
+/**
+ * Simple checkbox handler function to enable
+ * or disable test row by updating css style
+ * @param chkbox
+ */
+function checkboxClickHandler(chkbox)
+{
+	// get the parent row
+	var tdNode = chkbox.parentNode;
+	var trNode = tdNode.parentNode;
+	trNode.setAttribute("class", chkbox.checked ? "enabled" : "disabled");
 }
 
 /**
  * Adds the specified handler function to the click event of
  * the specified element
  * @param element
- * @param handlerFunction
+ * @param clickFunc - function given (targetNode, event)
  */
-function addClickHandlerToElement(element, handlerFunction)
+function addClickHandler(element, clickFunction)
 {
-	var clickFunc = function (e) {
-        if (element.tagName === "A")
-        {
-        	// prevent default click action for links so
-        	// that link isn't followed
-        	e = e || window.event;
-        	e.preventDefault();
-        }
-        handlerFunction(); // call handler function
-    };
+	function crossBrowserClickFunc(evt)
+	{
+		if (!evt)
+		{
+			evt = window.event;
+		}
+		var node = evt.target ? evt.target : evt.srcElement;
+		clickFunction(node, evt);
+	};
     if (element.addEventListener) {
-    	element.addEventListener("click", clickFunc, false);
+    	element.addEventListener("click", crossBrowserClickFunc, false);
     } else if (element.attachEvent) {
-    	element.attachEvent("onclick", clickFunc);
+    	element.attachEvent("onclick", crossBrowserClickFunc);
     } else {
-    	element["onclick"] = clickFunc;
+    	element["onclick"] = crossBrowserClickFunc;
     }
-}
-
-/**
- * Updates the specified tests to enabled/selected or disabled/unselected
- * @param parentElementId Id of the parent element whose children test rows
- * 							will be updated (checkbox state and classes for row styling) 
- * @param selectionState true to select, false to unselect 
- */
-function updateTestsSelectionState(parentElementId, selectionState)
-{	
-	// promote this to top level and get rid of updateTestsSelectionState fn
-	testRowIterator.forEachTestUnderElement(
-			parentElementId, 
-			testRowIterator.noFilter, 	// operate on all rows
-			selectionState ? 
-					testRowIterator.tickCheckboxAndSetRowStyleEnabled : 
-					testRowIterator.untickCheckboxAndSetRowStyleDisabled);
 }
 
 /**
