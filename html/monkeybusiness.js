@@ -32,7 +32,7 @@ window.onload = function onPageLoad() {
 			for (var j = 0; j < testCases.length; j++)
 			{
 				var testName = suiteName + "." + testCases[j];
-				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run." + testName + "\" href=\"\">Run</a></td><td></td><td></td></tr>";
+				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run." + testName + "\" href=\"\"></a></td><td><span></span></td><td></td></tr>";
 			}
 			if (testCases.length > 0)
 				testHtml += "</tbody>";
@@ -123,8 +123,7 @@ function addClickHandler(element, clickFunction)
 {
 	function crossBrowserClickFunc(evt)
 	{
-		if (!evt)
-		{
+		if (!evt) {
 			evt = window.event;
 		}
 		var node = evt.target ? evt.target : evt.srcElement;
@@ -158,13 +157,13 @@ function runSelectedTests(parentElementId)
 		var runFilter = testsToRun.join(":");
 		
 		// Call rest get on tests
-		rest.doAjaxGet("/rest/results/" + runFilter, handleTestResults);
+		rest.doAjaxGet("/rest/results/" + encodeURIComponent(runFilter), handleTestResults);
 		
 		// update test row styles to running, to give user feedback
 		testRowIterator.forEachTestUnderElement(
-				parentElementId,
-				testRowIterator.onlySelectedFilter,
-				function (row) { row.setAttribute("class", "running"); });
+			parentElementId,
+			testRowIterator.onlySelectedFilter,
+			function (row) { row.setAttribute("class", "running"); });
 	} // otherwise silently ignore attempted run of 0 tests
 }
 
@@ -178,35 +177,35 @@ function handleTestResults(testResults)
 	if (!Array.isArray(testResults))
 	{
 		// not an array, so error out
-		alert("Error - Server returned unexpected test result objects.");
-		// cancel running state
-		testRowIterator.forEachTestUnderElement(
-				"test", 
-				testRowIterator.onlySelectedFilter, 
-				function (row) { row.setAttribute("class", "enabled"); });
-		return;
+		alert("No results available.\nPlease check that tests are enabled in the application under test.");
+	} else {
+		for (var i = 0; i < testResults.length; i++)
+		{
+			// get id of test we have the result for
+			var testResult = testResults[i];
+			var testId = testResult.suiteName + "." + testResult.caseName;
+			// update test row style
+			testRowIterator.forEachTestUnderElement(
+					testId, 
+					testRowIterator.noFilter, 
+					function (row) { row.setAttribute("class", testResult.passed ? "passed" : "failed"); });
+			var testRow = document.getElementById(testId);
+			// update last ran time
+			var timeStamp = (new Date()).toString();
+			timeStamp = timeStamp.replace(/^(.*:\d{2}).*$/, "$1"); // get rid of time zone, daylight saving etc suffixes
+			testRow.childNodes.item(2).innerHTML = timeStamp;
+			// update running time
+			testRow.childNodes.item(3).innerHTML = testResult.elapsedTime;
+			// update messages
+			testRow.childNodes.item(6).innerHTML = testResult.passed ?  "" : testResult.errorMessage;
+		}
 	}
-	for (var i = 0; i < testResults.length; i++)
-	{
-		// get id of test we have the result for
-		var testResult = testResults[i];
-		var testId = testResult.suiteName + "." + testResult.caseName;
-		// update test row style
-		testRowIterator.forEachTestUnderElement(
-				testId, 
-				testRowIterator.noFilter, 
-				function (row) { row.setAttribute("class", testResult.passed ? "passed" : "failed"); });
-		var testRow = document.getElementById(testId);
-		// update last ran time
-		var timeStamp = (new Date()).toString();
-		timeStamp = timeStamp.replace(/^(.*:\d{2}).*$/, "$1"); // get rid of time zone, daylight saving etc suffixes
-		testRow.childNodes.item(2).innerHTML = timeStamp;
-		// update running time
-		testRow.childNodes.item(3).innerHTML = testResult.elapsedTime;
-		// update messages
-		testRow.childNodes.item(6).innerHTML = testResult.passed ?  "" : testResult.errorMessage;
-	}
-	
+	// cancel running state for all running rows so users don't think app has hung
+	testRowIterator.forEachTestUnderElement(
+		"tests",
+		testRowIterator.onlySelectedFilter, 
+		function (row) { row.setAttribute("class", "enabled"); },
+		"tbody > tr[class=running]");
 }
 
 /**

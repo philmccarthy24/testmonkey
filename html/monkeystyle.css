@@ -1,74 +1,57 @@
-
-
-/* Default styling for run column: the play icon */
-td:nth-child(5) {
-    background: url(images/play32.png);
-    /*position: relative;*/
-    background-repeat: no-repeat;
-    height:32px;
-    width:32px;
-    overflow:hidden;
-    text-indent:100%;
-    white-space:nowrap;
-}
-
+/* Display play icon in run column by default */
 td:nth-child(5) > a { 
-	/*position: absolute;*/
-	/*position: relative;*/
-	width: 32px; 
-	height: 32px; 
-	background-color: transparent;
-    line-height: 0; 
-    font-size: 0;
-    color: transparent;
+	background:transparent url('images/play32.png') center top no-repeat;
+    height: 32px;
+    width: 32px;
+    display: block;
 }
 
-/* display question mark in results column by default */
-td:nth-child(6) {
-    background: url(images/question32.png);
-    background-repeat: no-repeat;
+/* Display question mark in results column by default */
+td:nth-child(6) > span {
+    background:transparent url('images/question32.png') center top no-repeat;
     height:32px;
     width:32px;
+    display: block;
 }
 
 /* Grey out play icon when row class is disabled */
-tr.disabled > td:nth-child(5) {
-    background: url(images/playdisabled32.png);
-    background-repeat: no-repeat;
-    height:32px;
-    width:32px;
+tr.disabled > td:nth-child(5) > a {
+	background:transparent url('images/playdisabled32.png') center top no-repeat;
+    height: 32px;
+    width: 32px;
+    display: block;
 }
 
 /* Display disabled icon in status column when row class is disabled */
-tr.disabled > td:nth-child(6) {
-    background: url(images/disabled32.png);
-    background-repeat: no-repeat;
+tr.disabled > td:nth-child(6) > span {
+    background:transparent url('images/disabled32.png') center top no-repeat;
     height:32px;
     width:32px;
+    display: block;
 }
 
-/* update loading icon in Run column : animated gif */
-tr.running > td:nth-child(5) {
-	background: url(images/loader32.gif);
-	background-repeat: no-repeat;
-	height:32px;
-    width:32px;
+/* Update loading icon in Run column : animated gif */
+tr.running > td:nth-child(5) > a {
+	background:transparent url('images/loader32.gif') center top no-repeat;
+    height: 32px;
+    width: 32px;
+    display: block;
 }
 
 /* Display tick in results column when test passes */
-tr.passed > td:nth-child(6) {
-	background: url(images/tick32.png);
-	background-repeat: no-repeat;
+tr.passed > td:nth-child(6) > span {
+	background:transparent url('images/tick32.png') center top no-repeat;
 	height:32px;
     width:32px;
+    display: block;
 }
 
 /* Display cross in results column when test fails */
-tr.failed > td:nth-child(6) {
-	background: url(images/cross32.png);
-	background-repeat: no-repeat;
+tr.failed > td:nth-child(6) > span {
+	background:transparent url('images/cross32.png') center top no-repeat;
 	height:32px;
     width:32px;
+    display: block;
 }
 
 
@@ -76,34 +59,13 @@ tr.failed > td:nth-child(6) {
 tr > td {
 	background-color: white;
 }
-
 tr.disabled > td {
 	background-color: rgb(240,240,240);
 }
-tr.disabled > td:nth-child(5) {
-	background-color: rgb(240,240,240);
-}
-tr.disabled > td:nth-child(6) {
-	background-color: rgb(240,240,240);
-}
-
 tr.passed > td {
 	background-color: rgb(200,255,200);
 }
-tr.passed > td:nth-child(5) {
-	background-color: rgb(200,255,200);
-}
-tr.passed > td:nth-child(6) {
-	background-color: rgb(200,255,200);
-}
-
 tr.failed > td {
-	background-color: red;
-}
-tr.failed > td:nth-child(5) {
-	background-color: red;
-}
-tr.failed > td:nth-child(6) {
 	background-color: red;
 }
 

@@ -3,13 +3,23 @@ TestRowIterator = function () {
 	/**
 	 * For each test under the parent id (filtered by the filter function)
 	 * carry out the specified action
-	 * @param parentElementId
-	 * @param filterFunction
-	 * @param actionFunction
+	 * @param parentElementId - the root element id to search under
+	 * @param filterFunction - filter function that gets called for each row. Takes
+	 * 			a row as input, return true to action the row and false to discard it
+	 * @param actionFunction - function that gets called for each row. Takes a row as input,
+	 * 			the return value is added to the result array
+	 * @param rowSelector - optional param providing row selection criteria.
+	 * 			Different from filterFunction as this css selector determines
+	 * 			which rows are initially selected. More efficient to use the selector
+	 * 			as a row filter if the criteria is simple / at tr level (eg tr class)
 	 * @returns {Array} list of results from each invocation of actionFunction
 	 */
-	this.forEachTestUnderElement = function(parentElementId, filterFunction, actionFunction)
+	this.forEachTestUnderElement = function(parentElementId, filterFunction, actionFunction, rowSelector)
 	{
+		if (!rowSelector)
+		{
+			rowSelector = "tbody > tr";
+		}
 		var parent = document.getElementById(parentElementId);
 		var rows = [];
 		if (parent.tagName === "TR")
@@ -19,7 +29,7 @@ TestRowIterator = function () {
 		} else {
 			// element is a parent of a table or tables, so search for
 			// body trs in this
-			rows = parent.querySelectorAll("tbody > tr");
+			rows = parent.querySelectorAll(rowSelector);
 		}
 		var results = [];
 		for (var i = 0; i < rows.length; i++)
