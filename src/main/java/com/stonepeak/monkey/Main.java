@@ -2,6 +2,9 @@ package com.stonepeak.monkey;
 
 import java.io.IOException;
 import java.util.logging.Level;
+
+import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
+import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -15,7 +18,7 @@ public class Main {
 	
 	private static final String WEB_SERVICE_ROOT_PATH = "/rest";
 	private static final String JAR_WEB_CONTENT_DIRECTORY = "html";
-	private static final String JAR_WEB_CONTENT_STARTPAGE = "index.html";
+	private static final String JAR_WEB_CONTENT_STARTPAGE = "/index.html";
 	
     public static void main(String[] args) throws IOException 
     {
@@ -50,9 +53,21 @@ public class Main {
         resource_handler.setDirectoriesListed(false);
         resource_handler.setWelcomeFiles(new String[]{ JAR_WEB_CONTENT_STARTPAGE });
         resource_handler.setResourceBase(webDir);
-
+        
+        // create a rewrite handler to redirect / or /anything.html to the rest tests xml get path.
+        // the xslt style sheet will then be used to generate the html page
+        RewriteHandler rewrite = new RewriteHandler();
+        rewrite.setRewriteRequestURI(true);
+        rewrite.setRewritePathInfo(false);
+        rewrite.setOriginalPathAttribute("requestedPath");
+       
+        RedirectRegexRule redirect = new RedirectRegexRule();
+        redirect.setRegex("/(?:.*html)?");
+        redirect.setReplacement("/rest/tests/xml/");
+        rewrite.addRule(redirect);
+        
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { resource_handler, context });
+        handlers.setHandlers(new Handler[] { rewrite, resource_handler, context });
         
         server.setHandler(handlers);
         

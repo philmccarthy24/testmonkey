@@ -6,58 +6,18 @@ testRowIterator = new TestRowIterator();
 
 // Code to run on page load
 window.onload = function onPageLoad() {
-	// Call rest get on tests
-	rest.doAjaxGet("/rest/tests/json", function (testSuites) {
-		// asynchronous ajax call has returned
-		if (!Array.isArray(testSuites))
-		{
-			// not an array, so return unavailable text
-			document.getElementById('tests').innerHTML = "Tests unavailable";
-			return;
-		}
-		
-		/*
-		// we have an array of test suites back, so construct html tables
-		var testHtml = "";
-		for (var i = 0; i < testSuites.length; i++)
-		{
-			var suiteName = testSuites[i].suiteName;
-			testHtml += "<h2>" + suiteName + "</h2>";
-			testHtml += "<a id=\"Select." + suiteName + "\" href=\"\">Select all tests in suite</a>";
-			testHtml += "<a id=\"Unselect." + suiteName + "\" href=\"\">Deselect all tests in suite</a>";
-			testHtml += "<a id=\"Run." + suiteName + "\" href=\"\">Run selected tests in suite</a>";
-			testHtml += "<table id=\"" + suiteName + "\"><thead><tr><th>Enabled</th><th>Test name</th><th>Last Ran</th><th>Running time</th><th>Run</th><th>Result</th><th>Messages</th></tr></thead>";
-			var testCases = testSuites[i].testCases;
-			if (testCases.length > 0)
-				testHtml += "<tbody>";
-			for (var j = 0; j < testCases.length; j++)
-			{
-				var testName = suiteName + "." + testCases[j];
-				testHtml += "<tr class=\"enabled\" id=\"" + testName + "\"><td><input type=\"checkbox\" checked=\"checked\" /></td><td>" + testName + "</td><td>Never</td><td>0.0</td><td><a id=\"Run." + testName + "\" href=\"\"></a></td><td><span></span></td><td></td></tr>";
-			}
-			if (testCases.length > 0)
-				testHtml += "</tbody>";
-			testHtml += "</table>";
-		}
-		
-		// put the html into the dom
-		document.getElementById('tests').innerHTML = testHtml;
-		*/
-		
-		// add click handler to all hyperlinks
-		var links = document.querySelectorAll("a");
-		for (var i = 0; i < links.length; i++)
-		{
-			addClickHandler(links[i], linkClickHandler);
-		}
-		// add click handler to all checkboxes
-		var chkboxes = document.querySelectorAll("input[type=checkbox]");
-		for (var i = 0; i < chkboxes.length; i++)
-		{
-			addClickHandler(chkboxes[i], checkboxClickHandler);
-		}
-		
-	});
+	// add click handler to all hyperlinks
+	var links = document.querySelectorAll("a");
+	for (var i = 0; i < links.length; i++)
+	{
+		addClickHandler(links[i], linkClickHandler);
+	}
+	// add click handler to all checkboxes
+	var chkboxes = document.querySelectorAll("input[type=checkbox]");
+	for (var i = 0; i < chkboxes.length; i++)
+	{
+		addClickHandler(chkboxes[i], checkboxClickHandler);
+	}
 };
 
 /**
