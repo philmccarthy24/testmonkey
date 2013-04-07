@@ -10,18 +10,36 @@
 			<link rel="stylesheet" href="/monkeystyle.css" />
 		</head>
 		<body>
-			<h1>TestMonkey Google Test web runner</h1>
-			<div id="global_controls">
-				<a id="Select.tests" href="">Select all tests</a>
-				<a id="Unselect.tests" href="">Deselect all Tests</a>
-				<a id="Run.tests" href="">Run selected tests</a>
-			</div>
+			<h1>Test<img src="/images/monkey.svg" />Monkey</h1>
+			<h2><img src="/images/gtestlogo.gif" />googletest <span>web runner</span></h2>
+			<ul class="topnav">
+				<li>
+					<a id="Select.tests" href="">Select all tests</a>
+				</li>
+				<li>
+					<a id="Unselect.tests" href="">Deselect all Tests</a>
+				</li>
+				<li>
+					<a id="Run.tests" href="">Run all selected tests</a>
+				</li>
+				<li>
+					<a id="About.tests" href="">About</a>
+				</li>
+			</ul>
 			<div id="tests">
 				<xsl:for-each select="testSuites/test">
 					<h2><xsl:value-of select="testsuite"/></h2>
-					<a id="Select.{testsuite}" href="">Select all tests in suite</a>
-					<a id="Unselect.{testsuite}" href="">Deselect all tests in suite</a>
-					<a id="Run.{testsuite}" href="">Run selected tests in suite</a>
+					<ul class="nav">
+						<li>
+							<a id="Select.{testsuite}" href="">Select all tests in suite</a>
+						</li>
+						<li>
+							<a id="Unselect.{testsuite}" href="">Deselect all tests in suite</a>
+						</li>
+						<li>
+							<a id="Run.{testsuite}" href="">Run selected tests in suite</a>
+						</li>
+					</ul>
 					<table id="{testsuite}">
 						<thead>
 							<tr>

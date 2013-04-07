@@ -39,6 +39,8 @@ function linkClickHandler(link, evt)
 	if (cmd === "Run")
 	{
 		runSelectedTests(targetNodeId);
+	} else if (cmd === "About") {
+		alert("Test Monkey v1.0 created April 2013 by Phil McCarthy.\n\nThis software is distributed under the MIT license,\nand is free for both commercial and non-commercial use.\nImages used are the property of the respective copyright holders.\n\nSee Readme.md for further details");
 	} else {
 		if (cmd !== "Select" && cmd !== "Unselect")
 		{
@@ -151,15 +153,16 @@ function handleTestResults(testResults)
 					testId, 
 					testRowIterator.noFilter, 
 					function (row) { row.setAttribute("class", testResult.passed ? "passed" : "failed"); });
+			
 			var testRow = document.getElementById(testId);
 			// update last ran time
 			var timeStamp = (new Date()).toString();
 			timeStamp = timeStamp.replace(/^(.*:\d{2}).*$/, "$1"); // get rid of time zone, daylight saving etc suffixes
-			testRow.childNodes.item(2).innerHTML = timeStamp;
+			testRow.children[2].innerHTML = timeStamp;
 			// update running time
-			testRow.childNodes.item(3).innerHTML = testResult.elapsedTime;
+			testRow.children[3].innerHTML = testResult.elapsedTime;
 			// update messages
-			testRow.childNodes.item(6).innerHTML = testResult.passed ?  "" : testResult.errorMessage;
+			testRow.children[6].innerHTML = testResult.passed ?  "" : testResult.errorMessage;
 		}
 	}
 	// cancel running state for all running rows so users don't think app has hung

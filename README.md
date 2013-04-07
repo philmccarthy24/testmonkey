@@ -1,19 +1,21 @@
-## JAX-RS with Jersey/Grizzly on Heroku
+## TestMonkey v1.0 web-based test runner for google test
 
-JAX-RS is a great way to build RESTful services in Java. This is a very quick and simple example of how you can deploy a JAX-RS application on Heroku. It's based on the helloworld sample in the [Jersey 1.0.3 samples collection](http://download.java.net/maven/2/com/sun/jersey/samples/jersey-samples/1.0.3/jersey-samples-1.0.3-project.zip). A few tweaks was made which you can see in the commit log.
+This software allows C++ test harness applications compiled with the google test library
+to be run easily and for unit test results to be clearly displayed in a web browser.
 
-Assuming you're already set up with Heroku including the foreman tool, all you need to do to run this locally is
+From the terminal / command prompt, start the embedded web server with:
 
-1. Clone this repo
-2. cd into the directory
-3. mvn package
-4. foreman start
+java -jar testmonkey-1.0.jar [name of google test application]
 
-To deploy to Heroku:
+Then point your web browser at:
 
-1. heroku create --stack cedar
-2. git push heroku master
-3. curl http://[appname].herokuapp.com/hello
+http://localhost:8080
 
-It's that simple.
+and use the interface to run individual tests / test suites. Note the gtest binary can be
+updated while the web server is running.
 
+ctrl-c from the command prompt to quit.
+
+Enjoy!
+
+Phil McCarthy, April 2013

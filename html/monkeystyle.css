@@ -1,8 +1,130 @@
+body {
+	font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	line-height: 1.4em;
+	color: #333333;
+	-webkit-font-smoothing: antialiased;
+	background: #eeeeee;
+	width: 80%;
+	margin: 0 auto;
+}
+
+body h1 {
+	margin: 0;
+	padding: 20px 0px 0px 0px;
+	text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
+	color: #cccccc;
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 6em;
+	text-align: center;
+}
+
+body h1 img {
+	vertical-align: middle;
+	padding-left: 10px;
+	padding-right: 5px;
+	width: 80px;
+	height: 80px;
+}
+
+body h2 {
+	margin: 0;
+	padding: 0;
+    color: #666666;
+    font: 300% arial,sans-serif;
+    text-align: center;
+}
+body h2 span {
+	color: #888;
+}
+body h2 img {
+	vertical-align: bottom;
+	margin-right: 0.1em;
+}
+
+ul.topnav
+ {
+ 	float: right;
+	margin:0;
+	padding:0;
+}
+ul.topnav li {
+	display:inline;
+	padding:0;
+	margin:0;
+}
+ul.topnav li a {
+	padding: 20px 0px 10px 40px;
+	float: left;
+	width: auto;
+	color: #666666;
+	text-shadow: rgba(255, 255, 255, 0.8) 0 2px 0;
+	text-align: center;
+	text-decoration: none;
+	letter-spacing: -1px;
+	font-size: 1.5em;
+}
+ul.topnav li a:hover {
+	text-decoration: underline;
+	color: #444;
+}
+
+#tests {
+	clear: both;
+	background: #fff;
+	padding: 20px;
+	margin-bottom: 40px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
+	-moz-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
+	-ms-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
+	-o-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
+	box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
+	-webkit-border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	-ms-border-radius: 0 0 5px 5px;
+	-o-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+}
+
+#tests h2 {
+	font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+	text-align: left;
+	font-size: 2em;
+}
+
+ul.nav
+ {
+ 	float: left;
+	margin:0;
+	padding:0;
+}
+ul.nav li {
+	display:inline;
+	padding:0;
+	margin:0;
+}
+ul.nav li a {
+	padding: 0 1em 0 1em;
+	float: left;
+	width: auto;
+	color: #666666;
+	text-shadow: rgba(255, 255, 255, 0.8) 0 2px 0;
+	text-align: center;
+	text-decoration: none;
+	border-right:2px solid #aaa;
+}
+ul.nav > li:last-child > a {
+	border-right-style: none;
+}
+ul.nav li a:hover {
+	text-decoration: underline;
+	color: #444;
+}
+
 /* Display play icon in run column by default */
-td:nth-child(5) > a { 
-	background:transparent url('images/play32.png') center top no-repeat;
-    height: 32px;
-    width: 32px;
+td:nth-child(5) > a {
+	background:transparent url('images/play.png') center top no-repeat;
+    height: 38px;
+    width: 40px;
     display: block;
 }
 
@@ -16,9 +138,9 @@ td:nth-child(6) > span {
 
 /* Grey out play icon when row class is disabled */
 tr.disabled > td:nth-child(5) > a {
-	background:transparent url('images/playdisabled32.png') center top no-repeat;
-    height: 32px;
-    width: 32px;
+	background:transparent url('images/playdisabled.png') center top no-repeat;
+    height: 38px;
+    width: 40px;
     display: block;
 }
 
@@ -32,7 +154,7 @@ tr.disabled > td:nth-child(6) > span {
 
 /* Update loading icon in Run column : animated gif */
 tr.running > td:nth-child(5) > a {
-	background:transparent url('images/loader32.gif') center top no-repeat;
+	background:transparent url('images/loader.gif') center top no-repeat;
     height: 32px;
     width: 32px;
     display: block;
@@ -54,13 +176,39 @@ tr.failed > td:nth-child(6) > span {
     display: block;
 }
 
-
-/* Background colour styling for rows */
-tr > td {
-	background-color: white;
+table
+{
+	border-collapse:collapse;
+	clear: both;
+	width: 100%;
+	margin-bottom: 40px;
+	margin-top: 30px;
 }
+th {
+	background-color: #AEC6CF;
+	color: white;
+	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+	text-shadow: rgba(80, 80, 80, 0.8) 0 2px 0;
+	font-size: 1.25em;
+	border-top: 2px solid #aaa;
+}
+th, td {
+	height: 40px;
+	width: auto;
+	padding: 0;
+	margin: 0;
+	border-bottom: 2px solid #aaa;
+	text-align: center;
+}
+td {
+	background-color: #E5E4E2;
+	font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+	text-shadow: rgba(255, 255, 255, 0.8) 0 2px 0;
+	font-size: 1em;
+}
+
 tr.disabled > td {
-	background-color: rgb(240,240,240);
+	background-color: #F5F5F5;
 }
 tr.passed > td {
 	background-color: rgb(200,255,200);
