@@ -1,5 +1,6 @@
 package com.stonepeak.monkey.data;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -117,6 +118,17 @@ public class TestManager {
 		//System.out.println("Running:\n" + testCommandBuilder.toString());
 		try {
 			Process gtestApp = Runtime.getRuntime().exec(testCommandBuilder.toString());
+			
+			// the following prevents Process.waitFor() hanging under windows
+			// exhaust input stream
+			BufferedInputStream in = new BufferedInputStream(gtestApp.getInputStream());
+			byte[] bytes = new byte[4096];
+			while (in.read(bytes) != -1) {}
+						
+			// exhaust error stream
+			BufferedInputStream err = new BufferedInputStream(gtestApp.getErrorStream());
+			while (err.read(bytes) != -1) {}
+			
 			// wait for the gtest app to terminate
 			gtestApp.waitFor();
 		} catch (IOException e) {
