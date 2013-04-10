@@ -219,5 +219,10 @@ tr.passed > td {
 }
 tr.failed > td {
 	background-color: red;
+	color: yellow;
+	font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+	text-shadow: none;
+	font-size: 1em;
+	font-weight: bold;
 }
 

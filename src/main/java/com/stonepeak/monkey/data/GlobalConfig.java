@@ -7,7 +7,7 @@ public class GlobalConfig {
 	 * @return the gtestAppPath
 	 */
 	public static String getGtestAppPath() {
-		return System.getProperty("user.dir") + System.getProperty("file.separator") + gtestAppName;
+		return gtestAppName;
 	}
 
 	/**
