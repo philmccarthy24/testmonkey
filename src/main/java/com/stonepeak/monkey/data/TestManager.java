@@ -89,11 +89,8 @@ public class TestManager {
 				tests.add(currentSuite);
 			}
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("Could not run google test app: \"" + gtestAppPath + "\" - did you specify the correct file?");
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 		if (tests.isEmpty())
@@ -107,37 +104,32 @@ public class TestManager {
 	 * @param gtestFilter the filter used to specify which tests to run eg TestSuite.TestCase for one test.
 	 * 			separate multiple expressions by colons - see gtest --gtest_filter docs
 	 * @return GUID of test run, used to uniquely identify a set of results
+	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
-	public String runTests(String gtestFilter)
+	public String runTests(String gtestFilter) throws IOException, InterruptedException
 	{
 		String guid = UUID.randomUUID().toString();
 		StringBuilder testCommandBuilder = new StringBuilder();
 		testCommandBuilder.append(gtestAppPath).append(" ")
 			.append(RUN_TEST_ARG).append("=").append(gtestFilter).append(" ")
 			.append(OUTPUT_XML_ARG).append(":").append(guid).append(".xml");
-		//System.out.println("Running:\n" + testCommandBuilder.toString());
-		try {
-			Process gtestApp = Runtime.getRuntime().exec(testCommandBuilder.toString());
-			
-			// the following prevents Process.waitFor() hanging under windows
-			// exhaust input stream
-			BufferedInputStream in = new BufferedInputStream(gtestApp.getInputStream());
-			byte[] bytes = new byte[4096];
-			while (in.read(bytes) != -1) {}
-						
-			// exhaust error stream
-			BufferedInputStream err = new BufferedInputStream(gtestApp.getErrorStream());
-			while (err.read(bytes) != -1) {}
-			
-			// wait for the gtest app to terminate
-			gtestApp.waitFor();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		Process gtestApp = Runtime.getRuntime().exec(testCommandBuilder.toString());
+		
+		// the following prevents Process.waitFor() hanging under windows
+		// exhaust input stream
+		BufferedInputStream in = new BufferedInputStream(gtestApp.getInputStream());
+		byte[] bytes = new byte[4096];
+		while (in.read(bytes) != -1) {}
+					
+		// exhaust error stream
+		BufferedInputStream err = new BufferedInputStream(gtestApp.getErrorStream());
+		while (err.read(bytes) != -1) {}
+		
+		// wait for the gtest app to terminate
+		gtestApp.waitFor();
+		
 		return guid;
 	}
 	
@@ -185,15 +177,8 @@ public class TestManager {
 				resultList.add(testResult);
 			}
 
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			// TODO implement
-			e.printStackTrace();
-		} catch (DOMException e) {
-			// TODO implement
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("An error occured while attempting to parse the google test result XML file.");
 		} finally {
 			// clean up test result file
 			File file = new File(testRunId + ".xml");

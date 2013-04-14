@@ -48,11 +48,18 @@ public class TestResource {
     @GET @Path("/results/{gtestfilter}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TestCaseResult> handleTestResults(@PathParam("gtestfilter") String filter) {
-    	// run the test
-    	String testRunId = testManager.runTests(filter);
+    	List<TestCaseResult> results = null;
     	
-    	// convert the results to POJOs
-    	List<TestCaseResult> results = testManager.getTestResults(testRunId);
+    	try {
+        	// run the test
+    		String testRunId = testManager.runTests(filter);
+    		
+    		// convert the results to POJOs
+        	results = testManager.getTestResults(testRunId);
+    	} catch (Exception e) {
+    		System.out.println("An error occured while attempting to run tests from the google test executable.");
+    	}
+    	
     	return results;
     }
 }
