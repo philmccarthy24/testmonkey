@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<UnitTestSchedule	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:noNamespaceSchemaLocation="UnitTestScheduleSchema.xsd"
+					runallfrom="../gtest-1.6.0/xcode/Build/Products/$(Configuration)">
+	<UnitTestModule testfilter="*" enabled="true">gtest_unittest</UnitTestModule>
+	<UnitTestModule testfilter="*" enabled="false">AnotherUnitTestModule.exe</UnitTestModule>
+</UnitTestSchedule>

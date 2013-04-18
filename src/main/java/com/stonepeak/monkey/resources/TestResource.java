@@ -17,27 +17,41 @@ import com.sun.jersey.api.provider.jaxb.XmlHeader;
 @Path("/")
 public class TestResource {
 	
-	private TestManager testManager = new TestManager(GlobalConfig.getGtestAppPath());
+	private TestManager testManager = new TestManager();
     
 	/**
 	 * Main tests handler - gets list of tests from executable
 	 * @return
 	 */
-    @GET @Path("/tests/json")
+    @GET @Path("/tests/{appId}/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TestSuite> handleTests() {
-    	return testManager.getTests();
+    public List<TestSuite> handleTests(@PathParam("appId") int nAppId) {
+    	List<TestSuite> testSuites = null;
+    	try {
+    		String gtestApp = GlobalConfig.getConfig().getGtestAppPaths().get(nAppId);
+    		testSuites = testManager.getTests(gtestApp);
+		} catch (IndexOutOfBoundsException iobe) {
+			System.out.println("App id specified does not exist.");
+		}
+    	return testSuites;
     }
     
 	/**
 	 * Main tests handler - gets list of tests from executable
 	 * @return
 	 */
-    @GET @Path("/tests/xml")
+    @GET @Path("/tests/{appId}/xml")
     @Produces(MediaType.APPLICATION_XML)
     @XmlHeader("<?xml-stylesheet type=\"text/xsl\" href=\"/tests.xsl\"?>")
-    public List<TestSuite> handleTestsAsXml() {
-    	return testManager.getTests();
+    public List<TestSuite> handleTestsAsXml(@PathParam("appId") int nAppId) {
+    	List<TestSuite> testSuites = null;
+    	try {
+    		String gtestApp = GlobalConfig.getConfig().getGtestAppPaths().get(nAppId);
+    		testSuites = testManager.getTests(gtestApp);
+    	} catch (IndexOutOfBoundsException iobe) {
+    		System.out.println("App id specified does not exist.");
+    	}
+    	return testSuites;
     }
     
     /**
@@ -45,17 +59,20 @@ public class TestResource {
      * @param filter
      * @return
      */
-    @GET @Path("/results/{gtestfilter}")
+    @GET @Path("/results/{appId}/{gtestfilter}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TestCaseResult> handleTestResults(@PathParam("gtestfilter") String filter) {
+    public List<TestCaseResult> handleTestResults(@PathParam("appId") int nAppId, @PathParam("gtestfilter") String filter) {
     	List<TestCaseResult> results = null;
     	
     	try {
         	// run the test
-    		String testRunId = testManager.runTests(filter);
+    		String gtestApp = GlobalConfig.getConfig().getGtestAppPaths().get(nAppId);
+    		String testRunId = testManager.runTests(gtestApp, filter);
     		
     		// convert the results to POJOs
         	results = testManager.getTestResults(testRunId);
+    	} catch (IndexOutOfBoundsException iobe) {
+    		System.out.println("App id specified does not exist.");
     	} catch (Exception e) {
     		System.out.println("An error occured while attempting to run tests from the google test executable.");
     	}

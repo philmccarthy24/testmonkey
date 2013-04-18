@@ -1,8 +1,11 @@
 package com.stonepeak.monkey;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.xml.xpath.XPathExpressionException;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;
@@ -19,24 +22,55 @@ public class Main {
 	private static final String WEB_SERVICE_ROOT_PATH = "/rest";
 	private static final String JAR_WEB_CONTENT_DIRECTORY = "html";
 	private static final String JAR_WEB_CONTENT_STARTPAGE = "/index.html";
+	private static final int DEFAULT_PORT_NUM = 8080;
 	
-    public static void main(String[] args) throws IOException 
+    public static void main(String[] args)
+    {
+    	Main app = new Main();
+    	app.runApplication(args);
+    }
+    
+    public void runApplication(String[] args)
     {
     	// process command line args and set global app config
-    	if (args.length > 0)
-    	{
-    		GlobalConfig.setGtestAppName(args[0]);
-    	} else {
-    		System.out.println("Please specify a gtest native executable (eg java -jar testmonkey.jar [native exe name])");
+    	try {
+    		processCommandLine(args);
+    	} catch (Exception e) {
+    		System.out.println("\nError: " + e.getMessage());
+    		System.out.println("TestMonkey command options:\ntestharness1name ... testharnessNname [Port=portnum]\nOR:\nschedule=testschedule.xml [VarName1=value1] ... [VarNameN=valueN] [Port=portnum]\n\n");
     		System.exit(-1);
     	}
     	
     	suppressFrameworkLogging();
     		
-    	// Create the web server
-        Server server = new Server(8080);
+    	// Get port number - if not specified on command line use default
+    	int portNum = DEFAULT_PORT_NUM;
+    	String portOption = GlobalConfig.getConfig().getCommandVars().get("Port");
+    	if (portOption != null)
+    		portNum = Integer.parseInt(portOption);
+    	
+    	// Create the embedded web server
+        Server server = new Server(portNum);
+        server.setHandler(getServerHandlers());
         
-        // set up servlet handler for rest calls
+        System.out.println("Starting app...\n");
+        
+        try {
+            server.start();
+            System.out.println("Started OK! Point your browser to http://localhost:" + portNum + ". Press Ctrl-c to exit.\n\n");
+            server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Sets up the handlers for the server
+     * @return
+     */
+    private HandlerList getServerHandlers()
+    {
+    	// set up servlet handler for rest calls
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         
         context.setContextPath(WEB_SERVICE_ROOT_PATH);
@@ -47,7 +81,7 @@ public class Main {
         context.addServlet(h, "/*");
         
         // set up a resource handler to serve up static content from jar html dir
-        String webDir = server.getClass().getClassLoader().getResource(JAR_WEB_CONTENT_DIRECTORY).toExternalForm();
+        String webDir = context.getClass().getClassLoader().getResource(JAR_WEB_CONTENT_DIRECTORY).toExternalForm();
         
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(false);
@@ -69,23 +103,13 @@ public class Main {
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] { rewrite, resource_handler, context });
         
-        server.setHandler(handlers);
-        
-        System.out.println("Starting app...\n");
-        
-        try {
-            server.start();
-            System.out.println("Started OK! Point your browser to http://localhost:8080. Press Ctrl-c to exit.\n\n");
-            server.join();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return handlers;
     }
     
     /**
      * Prevent jersey and jetty logging
      */
-    public static void suppressFrameworkLogging()
+    private void suppressFrameworkLogging()
     {
     	// Turn off jetty logging to stderr
     	System.setProperty( "org.eclipse.jetty.util.log.class", "com.stonepeak.monkey.HushLogger");
@@ -94,4 +118,68 @@ public class Main {
     	java.util.logging.Logger jerseyLogger = java.util.logging.Logger.getLogger("com.sun.jersey");
     	jerseyLogger.setLevel(Level.OFF);
     }
+    
+    /**
+     * Process the command line args
+     * @param args
+     * @throws FileNotFoundException, IllegalArgumentException
+     * @throws XPathExpressionException 
+     */
+    private void processCommandLine(String[] args) throws FileNotFoundException, IllegalArgumentException, XPathExpressionException
+	{
+    	// get global config
+    	GlobalConfig config = GlobalConfig.getConfig();
+		// setup regexes for extracting test schedule file and command line vars
+    	Pattern schedulePattern = Pattern.compile("schedule=(.*\\.xml)");
+		Pattern varPattern = Pattern.compile("(.*?)=(.*)");
+	    
+		// iterate over command line args
+		for (String arg : args)
+		{
+			// try to match test schedule pattern
+			Matcher m = schedulePattern.matcher(arg);
+			if (m.matches())
+			{
+				// arg is a test schedule file
+				config.setScheduleFile(m.group(1));
+				continue;
+			}
+			// try to match command line var pattern
+			m = varPattern.matcher(arg);
+			if (m.matches())
+			{
+				// arg is a local command variable - currently only variable
+				// replacement of vars specified in a test schedule file are supported
+				config.getCommandVars().put(m.group(1), m.group(2));
+				continue;
+			}
+			// otherwise variable is taken to be a gtest executable - we will test this below
+			config.getGtestAppPaths().add(arg);
+		}
+		
+		// check conflicting conditions
+		if (config.getGtestAppPaths().size() > 0 && config.hasScheduleFile())
+			throw new IllegalArgumentException("Command argumants invalid.");
+		
+		if (config.hasScheduleFile())
+		{
+			// do an initial parse of the test schedule so we can test validity of 
+			// gtest exe paths straight away
+			config.processTestSchedule();
+		}
+		
+		// check that we have an app to serve
+		if (config.getGtestAppPaths().isEmpty())
+			throw new IllegalArgumentException("No gtest app specified.");
+		
+		// check all gtest files exist
+		for (String gtestApp : config.getGtestAppPaths())
+		{
+			File f = new File(gtestApp);
+			if (!f.exists())
+			{
+				throw new FileNotFoundException("Gtest app \"" + gtestApp + "\" does not exist.");
+			}
+		}
+	}
 }

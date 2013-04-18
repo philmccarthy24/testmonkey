@@ -11,10 +11,8 @@ import java.util.UUID;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -22,27 +20,24 @@ import org.xml.sax.InputSource;
 
 public class TestManager {
 	
-	private String gtestAppPath;
-	
 	private static final String GET_TEST_ARG = "--gtest_list_tests";
 	private static final String RUN_TEST_ARG = "--gtest_filter";
 	private static final String OUTPUT_XML_ARG = "--gtest_output=xml";
 	
 	/**
 	 * Constructor
-	 * @param gtestAppPath The path of the native application binary under test
 	 */
-	public TestManager(String gtestAppPath)
+	public TestManager()
 	{
-		this.gtestAppPath = gtestAppPath;
 	}
 	
 	/**
 	 * Gets list of tests from gtest binary under test, and returns a list
 	 * of objects representing the available test suites and test cases
+	 * @param gtestAppPath - the gtest app to get tests from
 	 * @return
 	 */
-	public List<TestSuite> getTests()
+	public List<TestSuite> getTests(String gtestAppPath)
 	{
 		List<TestSuite> tests = new ArrayList<TestSuite>();
 		
@@ -101,13 +96,14 @@ public class TestManager {
 	
 	/**
 	 * Runs a specific test case from the app under test
+	 * @param gtestAppPath - the gtest app to run tests from
 	 * @param gtestFilter the filter used to specify which tests to run eg TestSuite.TestCase for one test.
 	 * 			separate multiple expressions by colons - see gtest --gtest_filter docs
 	 * @return GUID of test run, used to uniquely identify a set of results
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
-	public String runTests(String gtestFilter) throws IOException, InterruptedException
+	public String runTests(String gtestAppPath, String gtestFilter) throws IOException, InterruptedException
 	{
 		String guid = UUID.randomUUID().toString();
 		StringBuilder testCommandBuilder = new StringBuilder();
