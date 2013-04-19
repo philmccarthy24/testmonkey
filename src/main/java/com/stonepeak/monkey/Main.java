@@ -23,6 +23,7 @@ public class Main {
 	private static final String JAR_WEB_CONTENT_DIRECTORY = "html";
 	private static final String JAR_WEB_CONTENT_STARTPAGE = "/index.html";
 	private static final int DEFAULT_PORT_NUM = 8080;
+	private static final String PORT_COMMAND_ARG = "Port";
 	
     public static void main(String[] args)
     {
@@ -33,8 +34,9 @@ public class Main {
     public void runApplication(String[] args)
     {
     	// process command line args and set global app config
+    	GlobalConfig config = GlobalConfig.getConfig();
     	try {
-    		processCommandLine(args);
+    		config.processCommandLine(args);
     	} catch (Exception e) {
     		System.out.println("\nError: " + e.getMessage());
     		System.out.println("TestMonkey command options:\ntestharness1name ... testharnessNname [Port=portnum]\nOR:\nschedule=testschedule.xml [VarName1=value1] ... [VarNameN=valueN] [Port=portnum]\n\n");
@@ -45,9 +47,12 @@ public class Main {
     		
     	// Get port number - if not specified on command line use default
     	int portNum = DEFAULT_PORT_NUM;
-    	String portOption = GlobalConfig.getConfig().getCommandVars().get("Port");
-    	if (portOption != null)
-    		portNum = Integer.parseInt(portOption);
+    	if (config.varExists(PORT_COMMAND_ARG))
+    	{
+    		try {
+    			portNum = config.getIntVar(PORT_COMMAND_ARG);
+    		} catch (Exception e) {} // if can't get port arg, use default
+    	}
     	
     	// Create the embedded web server
         Server server = new Server(portNum);
@@ -97,7 +102,7 @@ public class Main {
        
         RedirectRegexRule redirect = new RedirectRegexRule();
         redirect.setRegex("/(?:.*html)?");
-        redirect.setReplacement("/rest/tests/xml/");
+        redirect.setReplacement("/rest/tests/0/xml/");
         rewrite.addRule(redirect);
         
         HandlerList handlers = new HandlerList();
@@ -118,68 +123,4 @@ public class Main {
     	java.util.logging.Logger jerseyLogger = java.util.logging.Logger.getLogger("com.sun.jersey");
     	jerseyLogger.setLevel(Level.OFF);
     }
-    
-    /**
-     * Process the command line args
-     * @param args
-     * @throws FileNotFoundException, IllegalArgumentException
-     * @throws XPathExpressionException 
-     */
-    private void processCommandLine(String[] args) throws FileNotFoundException, IllegalArgumentException, XPathExpressionException
-	{
-    	// get global config
-    	GlobalConfig config = GlobalConfig.getConfig();
-		// setup regexes for extracting test schedule file and command line vars
-    	Pattern schedulePattern = Pattern.compile("schedule=(.*\\.xml)");
-		Pattern varPattern = Pattern.compile("(.*?)=(.*)");
-	    
-		// iterate over command line args
-		for (String arg : args)
-		{
-			// try to match test schedule pattern
-			Matcher m = schedulePattern.matcher(arg);
-			if (m.matches())
-			{
-				// arg is a test schedule file
-				config.setScheduleFile(m.group(1));
-				continue;
-			}
-			// try to match command line var pattern
-			m = varPattern.matcher(arg);
-			if (m.matches())
-			{
-				// arg is a local command variable - currently only variable
-				// replacement of vars specified in a test schedule file are supported
-				config.getCommandVars().put(m.group(1), m.group(2));
-				continue;
-			}
-			// otherwise variable is taken to be a gtest executable - we will test this below
-			config.getGtestAppPaths().add(arg);
-		}
-		
-		// check conflicting conditions
-		if (config.getGtestAppPaths().size() > 0 && config.hasScheduleFile())
-			throw new IllegalArgumentException("Command argumants invalid.");
-		
-		if (config.hasScheduleFile())
-		{
-			// do an initial parse of the test schedule so we can test validity of 
-			// gtest exe paths straight away
-			config.processTestSchedule();
-		}
-		
-		// check that we have an app to serve
-		if (config.getGtestAppPaths().isEmpty())
-			throw new IllegalArgumentException("No gtest app specified.");
-		
-		// check all gtest files exist
-		for (String gtestApp : config.getGtestAppPaths())
-		{
-			File f = new File(gtestApp);
-			if (!f.exists())
-			{
-				throw new FileNotFoundException("Gtest app \"" + gtestApp + "\" does not exist.");
-			}
-		}
-	}
 }

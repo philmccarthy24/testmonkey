@@ -28,7 +28,7 @@ public class TestResource {
     public List<TestSuite> handleTests(@PathParam("appId") int nAppId) {
     	List<TestSuite> testSuites = null;
     	try {
-    		String gtestApp = GlobalConfig.getConfig().getGtestAppPaths().get(nAppId);
+    		String gtestApp = GlobalConfig.getConfig().getGtestAppPath(nAppId);
     		testSuites = testManager.getTests(gtestApp);
 		} catch (IndexOutOfBoundsException iobe) {
 			System.out.println("App id specified does not exist.");
@@ -46,7 +46,7 @@ public class TestResource {
     public List<TestSuite> handleTestsAsXml(@PathParam("appId") int nAppId) {
     	List<TestSuite> testSuites = null;
     	try {
-    		String gtestApp = GlobalConfig.getConfig().getGtestAppPaths().get(nAppId);
+    		String gtestApp = GlobalConfig.getConfig().getGtestAppPath(nAppId);
     		testSuites = testManager.getTests(gtestApp);
     	} catch (IndexOutOfBoundsException iobe) {
     		System.out.println("App id specified does not exist.");
@@ -66,7 +66,7 @@ public class TestResource {
     	
     	try {
         	// run the test
-    		String gtestApp = GlobalConfig.getConfig().getGtestAppPaths().get(nAppId);
+    		String gtestApp = GlobalConfig.getConfig().getGtestAppPath(nAppId);
     		String testRunId = testManager.runTests(gtestApp, filter);
     		
     		// convert the results to POJOs
