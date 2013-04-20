@@ -40,7 +40,14 @@ function linkClickHandler(link, evt)
 	{
 		runSelectedTests(targetNodeId);
 	} else if (cmd === "About") {
-		alert("Test Monkey v1.0 created April 2013 by Phil McCarthy.\n\nThis software is distributed under the MIT license,\nand is free for both commercial and non-commercial use.\nImages used are the property of the respective copyright holders.\n\nSee Readme.md for further details");
+		alert("Test Monkey v1.0 created April 2013 by Phil McCarthy.\n\n" +
+				"This software is distributed under the MIT license,\n" +
+				"and is free for both commercial and non-commercial use.\n" +
+				"Images used are the property of the respective copyright holders.\n\n" +
+				"See Readme.md for further details");
+	} else if (cmd === "Redirect") {
+		// this is a request to redirect to a page
+		window.location.href = targetNodeId;
 	} else {
 		if (cmd !== "Select" && cmd !== "Unselect")
 		{
@@ -120,8 +127,10 @@ function runSelectedTests(parentElementId)
 		testsToRun = shortenTestArray(testsToRun);
 		var runFilter = testsToRun.join(":");
 		
+		// get selected module id from rest url string
+		var moduleId = document.URL.replace(/^.*\/(\d+)$/, "$1");
 		// Call rest get on tests
-		rest.doAjaxGet("/rest/results/" + encodeURIComponent(runFilter), handleTestResults);
+		rest.doAjaxGet("/rest/tests/results/" + moduleId + "/" + encodeURIComponent(runFilter), handleTestResults);
 		
 		// update test row styles to running, to give user feedback
 		testRowIterator.forEachTestUnderElement(

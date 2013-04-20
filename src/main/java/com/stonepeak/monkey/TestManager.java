@@ -1,4 +1,4 @@
-package com.stonepeak.monkey.data;
+package com.stonepeak.monkey;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,6 +18,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.stonepeak.monkey.data.TestCaseResult;
+import com.stonepeak.monkey.data.TestModule;
+import com.stonepeak.monkey.data.TestSuite;
+
 public class TestManager {
 	
 	private static final String GET_TEST_ARG = "--gtest_list_tests";
@@ -34,14 +38,14 @@ public class TestManager {
 	/**
 	 * Gets list of tests from gtest binary under test, and returns a list
 	 * of objects representing the available test suites and test cases
-	 * @param gtestAppPath - the gtest app to get tests from
+	 * @param gtestAppInfo - the gtest app to get tests from
 	 * @return
 	 */
-	public List<TestSuite> getTests(String gtestAppPath)
+	public List<TestSuite> getTests(TestModule gtestAppInfo)
 	{
 		List<TestSuite> tests = new ArrayList<TestSuite>();
 		
-		String gtestGetTestsCmd = gtestAppPath + " " + GET_TEST_ARG;
+		String gtestGetTestsCmd = gtestAppInfo.getModuleFilePath() + " " + GET_TEST_ARG;
 		
 		try {
 			String line = null;
@@ -66,6 +70,7 @@ public class TestManager {
 					// trim the last dot from the test suite name
 					line = line.substring(0,  line.length() - 1);
 					currentSuite.setSuiteName(line);
+					currentSuite.setTestModule(gtestAppInfo.getModuleName());
 				} else if (line.matches("\\s{2}\\S+")) {
 					// this is a test case name
 					if (currentSuite == null)
@@ -75,7 +80,6 @@ public class TestManager {
 					currentSuite.addTestCase(line.trim());
 				} else // invalid output from gtest get tests command
 					throw new IllegalArgumentException("gtest_list_tests gave unexpected output line: " + line);
-				//System.out.println(line);
 			}
 			input.close();
 			// add last test suite to list
@@ -85,7 +89,7 @@ public class TestManager {
 			}
 			
 		} catch (Exception e) {
-			System.out.println("Could not run google test app: \"" + gtestAppPath + "\" - did you specify the correct file?");
+			System.out.println("Could not run google test app: \"" + gtestAppInfo.getModuleName() + "\" - did you specify the correct file?");
 		}
 		
 		if (tests.isEmpty())
@@ -96,18 +100,18 @@ public class TestManager {
 	
 	/**
 	 * Runs a specific test case from the app under test
-	 * @param gtestAppPath - the gtest app to run tests from
+	 * @param gtestAppInfo - the gtest app to run tests from
 	 * @param gtestFilter the filter used to specify which tests to run eg TestSuite.TestCase for one test.
 	 * 			separate multiple expressions by colons - see gtest --gtest_filter docs
 	 * @return GUID of test run, used to uniquely identify a set of results
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
-	public String runTests(String gtestAppPath, String gtestFilter) throws IOException, InterruptedException
+	public String runTests(TestModule gtestAppInfo, String gtestFilter) throws IOException, InterruptedException
 	{
 		String guid = UUID.randomUUID().toString();
 		StringBuilder testCommandBuilder = new StringBuilder();
-		testCommandBuilder.append(gtestAppPath).append(" ")
+		testCommandBuilder.append(gtestAppInfo.getModuleFilePath()).append(" ")
 			.append(RUN_TEST_ARG).append("=").append(gtestFilter).append(" ")
 			.append(OUTPUT_XML_ARG).append(":").append(guid).append(".xml");
 		

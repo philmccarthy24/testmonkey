@@ -14,7 +14,8 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import com.stonepeak.monkey.data.GlobalConfig;
+
+import com.stonepeak.monkey.util.HushLogger;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 public class Main {
@@ -102,7 +103,14 @@ public class Main {
        
         RedirectRegexRule redirect = new RedirectRegexRule();
         redirect.setRegex("/(?:.*html)?");
-        redirect.setReplacement("/rest/tests/0/xml/");
+        if (GlobalConfig.getConfig().getGtestAppCount() > 1)
+        {
+        	// set the root redirect to go to the modules page
+        	redirect.setReplacement("/rest/modules/xml");
+        } else {
+        	// set the root redirect to go to the only module's tests
+        	redirect.setReplacement("/rest/tests/xml/0");
+        }
         rewrite.addRule(redirect);
         
         HandlerList handlers = new HandlerList();

@@ -10,6 +10,7 @@
 								<xs:attribute name="enabled" type="xs:boolean" use="required"/>
 								<xs:attribute name="testfilter" type="xs:string" use="required"/>
 								<xs:attribute name="runfrom" type="xs:string" use="optional"/>
+								<xs:attribute name="description" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:simpleContent>
 					</xs:complexType>

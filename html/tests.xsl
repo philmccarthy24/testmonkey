@@ -11,8 +11,11 @@
 		</head>
 		<body>
 			<h1>Test<img src="/images/monkey.svg" />Monkey</h1>
-			<h2><img src="/images/gtestlogo.gif" />googletest <span>web runner</span></h2>
+			<h2><img src="/images/gtestlogo.gif" />googletest <span>web runner [<xsl:value-of select="testSuites/test[1]/testmodule"/>]</span></h2>
 			<ul class="topnav">
+				<li>
+					<a id="Redirect./" href="">Home</a>
+				</li>
 				<li>
 					<a id="Select.tests" href="">Select all tests</a>
 				</li>
@@ -56,7 +59,7 @@
 							<xsl:for-each select=".//testcase">
 								<tr class="enabled" id="{../../testsuite}.{text()}">
 									<td><input type="checkbox" checked="checked" /></td>
-									<td><xsl:value-of select="../../testsuite"/>.<xsl:value-of select="text()"/></td>
+									<td><xsl:value-of select="text()"/></td>
 									<td>Never</td>
 									<td>0.0</td>
 									<td><a id="Run.{../../testsuite}.{text()}" href=""></a></td>

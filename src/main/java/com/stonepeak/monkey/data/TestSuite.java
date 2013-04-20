@@ -11,6 +11,9 @@ public class TestSuite {
 	
 	public TestSuite() {}
 	
+	@XmlElement(name="testmodule")
+	private String testModule;
+	
 	@XmlElement(name="testsuite")
 	private String suiteName;
 	
@@ -47,4 +50,18 @@ public class TestSuite {
 	{
 		testCases.add(testCase);
 	}
+	/**
+	 * @return the testModule
+	 */
+	public String getTestModule() {
+		return testModule;
+	}
+	/**
+	 * @param testModule the testModule to set
+	 */
+	public void setTestModule(String testModule) {
+		this.testModule = testModule;
+	}
+	
+	
 }

@@ -1,7 +1,11 @@
-package com.stonepeak.monkey.data;
+package com.stonepeak.monkey;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +22,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.stonepeak.monkey.data.TestModule;
 import com.stonepeak.monkey.exceptions.VarNotFoundException;
 import com.stonepeak.monkey.util.Hash;
+import com.stonepeak.monkey.util.PathsHelper;
 
 public class GlobalConfig {
 
@@ -29,7 +36,7 @@ public class GlobalConfig {
 	
 	private static GlobalConfig config = new GlobalConfig();
 	
-	private List<String> gtestAppPaths = new ArrayList<String>();
+	private List<TestModule> gtestAppsList = new ArrayList<TestModule>();
 	private Map<String, String> commandVars = new HashMap<String, String>();
 	
 	/**
@@ -93,29 +100,10 @@ public class GlobalConfig {
 	 * @return
 	 * @throws IndexOutOfBoundsException
 	 */
-	public String getGtestAppPath(int nId) throws IndexOutOfBoundsException
+	public TestModule getGtestApp(int nId) throws IndexOutOfBoundsException
 	{
-		// if test schedule file specified, xml may have been updated by user on-the-fly.
-		if (varExists(SCHEDULE_FILE))
-		{
-			try {
-				// get hash of previously read file
-				String scheduleHash = getVar(SCHEDULE_HASH);
-				// get current hash of file
-				String currentScheduleHash = Hash.sha1(getVar(SCHEDULE_FILE));
-				if (!scheduleHash.equals(currentScheduleHash))
-				{
-					// schedule file has been updated - parse contents again to get gtest app paths
-					gtestAppPaths.clear();
-					processTestSchedule();
-					// store the new hash
-					commandVars.put(SCHEDULE_HASH, currentScheduleHash);
-				}
-			} catch (Exception e) {
-				System.out.println("Error processing test schedule file - please check it still exists.");
-			}
-		}
-		return gtestAppPaths.get(nId);
+		updateGtestAppsListIfScheduleFileChanged();
+		return gtestAppsList.get(nId);
 	}
 	
 	/**
@@ -124,18 +112,73 @@ public class GlobalConfig {
 	 */
 	public int getGtestAppCount()
 	{
-		return gtestAppPaths.size();
+		updateGtestAppsListIfScheduleFileChanged();
+		return gtestAppsList.size();
+	}
+	
+	/**
+	 * Gets the list of TestModules containing info about the gtest apps under test.
+	 * This info is either generated from the command line test module paths or specified
+	 * in a test schedule file
+	 * @return
+	 */
+	public List<TestModule> getGtestAppsList()
+	{
+		updateGtestAppsListIfScheduleFileChanged();
+		return gtestAppsList;
+	}
+	
+	/**
+	 * Update the gtest apps list if the test schedule file has changed.
+	 * If not using a test schedule file, does nothing
+	 */
+	private void updateGtestAppsListIfScheduleFileChanged()
+	{
+		if (varExists(SCHEDULE_FILE))
+		{
+			try {
+				// if test schedule file specified, xml may have been updated by user on-the-fly.
+				// process the schedule again if necessary
+				processTestSchedule();
+			} catch (Exception e) {
+				System.out.println("Error processing test schedule file - please check it still exists.");
+			}
+		}
 	}
 	
 	/**
 	 * Process the test schedule file
 	 * @throws XPathExpressionException 
 	 * @throws VarNotFoundException 
+	 * @throws IOException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-    private void processTestSchedule() throws XPathExpressionException, VarNotFoundException
+    private void processTestSchedule() throws XPathExpressionException, VarNotFoundException, NoSuchAlgorithmException, IOException
     {
+    	String scheduleFile = getVar(SCHEDULE_FILE);
+    	// first determine if we need to process the test schedule.
+    	// get current hash of schedule file
+    	String currentScheduleHash = Hash.sha1(scheduleFile);
+    	if (varExists(SCHEDULE_HASH))
+    	{
+    		// hash exists so we've processed the xml before. compare stored hash with current file hash	
+			String lastScheduleHash = getVar(SCHEDULE_HASH);  // get hash of previously read file
+			if (lastScheduleHash.equals(currentScheduleHash))
+			{
+				// hashes are the same - nothing has changed.
+				return;
+			} else {
+				// schedule file has been updated - need to process again
+				gtestAppsList.clear();	// clear out paths list
+				// store the new hash
+				commandVars.put(SCHEDULE_HASH.toUpperCase(), currentScheduleHash);
+			}
+    	} else {
+    		// store the hash for the first time
+			commandVars.put(SCHEDULE_HASH.toUpperCase(), currentScheduleHash);
+    	}
     	XPath xpath = XPathFactory.newInstance().newXPath();
-		InputSource inputSource = new InputSource(getVar(SCHEDULE_FILE));
+		InputSource inputSource = new InputSource(scheduleFile);
 		
 		// get runallfrom attrib from root node
 		Node unitTestScheduleNode = (Node) xpath.evaluate("UnitTestSchedule", inputSource, XPathConstants.NODE);
@@ -148,36 +191,45 @@ public class GlobalConfig {
 		{
 			String gtestAppPath = "";
 			Node testModuleNode = unitTestModuleNodes.item(i);
+			NamedNodeMap attribs = testModuleNode.getAttributes();
 			if (runAllAttrib == null)
 			{
 				// run all from path not specified on the top level,
 				// so get path from the "runfrom" attrib if possible
-				NamedNodeMap attribs = testModuleNode.getAttributes();
 				Node runFromAttrib = attribs.getNamedItem("runfrom");
 				if (runFromAttrib != null)
 				{
-					gtestAppPath += runFromAttrib.getNodeValue();
+					gtestAppPath = runFromAttrib.getNodeValue();
 				}
 			} else {
 				// runallfrom path specified so use this instead of paths
 				// specified on each node
-				gtestAppPath += runAllAttrib.getNodeValue();
-			}
-			// append app name to path (if specified)
-			String pathSeparator = System.getProperty("file.separator");
-			if (gtestAppPath.isEmpty())
-			{
-				// if gtestAppPath has just a name and not any path
-				// then prepend ./ to it ( TODO test this also works on windows)
-				gtestAppPath = "." + pathSeparator;
-			} else {
-				if (!gtestAppPath.endsWith(pathSeparator))
-					gtestAppPath += pathSeparator;
-				gtestAppPath += testModuleNode.getTextContent();
+				gtestAppPath = runAllAttrib.getNodeValue();
 			}
 			
-			// add full app path to app names list
-			gtestAppPaths.add(gtestAppPath);
+			// do a bit of fiddling with gtest app path
+			gtestAppPath = PathsHelper.joinPaths(gtestAppPath, testModuleNode.getTextContent());
+			gtestAppPath = PathsHelper.addRunLocalPathToFilenameWithoutPath(gtestAppPath);	//TODO check this works on windows
+			
+			// create a new TestModule object to hold gtest app info
+			TestModule testModule = new TestModule();
+			
+			// add gtest app path and module name to module info			
+			testModule.setModuleFilePath(gtestAppPath);
+			String moduleName = PathsHelper.getFileNameNoExtensionFromPath(gtestAppPath);
+			testModule.setModuleName(moduleName);
+			
+			// get description attribute if it exists
+			Node descriptionAttrib = attribs.getNamedItem("description");
+			if (descriptionAttrib != null)
+			{
+				testModule.setModuleDescription(descriptionAttrib.getNodeValue());
+			} else {
+				// need to generate a description
+				testModule.setModuleDescription("Tests in the " + moduleName + " google test harness");
+			}
+			
+			gtestAppsList.add(testModule);
 		}
 		
 		// substitute command variables on paths if any are specified
@@ -192,9 +244,10 @@ public class GlobalConfig {
     private void substitutePathVars() throws VarNotFoundException
     {
     	Pattern varPattern = Pattern.compile("\\$\\((.+)\\)");
-    	for (int i = 0; i < gtestAppPaths.size(); i++)
+    	for (int i = 0; i < gtestAppsList.size(); i++)
     	{
-    		String gtestAppPath = gtestAppPaths.get(i);
+    		TestModule testModule = gtestAppsList.get(i);
+    		String gtestAppPath = testModule.getModuleFilePath();
     		Matcher m = varPattern.matcher(gtestAppPath);
     		while (m.find())
     		{
@@ -203,7 +256,7 @@ public class GlobalConfig {
     			{
     				//variable can be replaced
     				String replacement = getVar(varMatched);
-    				gtestAppPaths.set(i, m.replaceAll(replacement));
+    				testModule.setModuleFilePath(m.replaceAll(replacement));
     			}
     		}
     	}
@@ -212,11 +265,12 @@ public class GlobalConfig {
     /**
      * Process the command line args
      * @param args
-     * @throws FileNotFoundException, IllegalArgumentException
      * @throws XPathExpressionException 
      * @throws VarNotFoundException 
+     * @throws IOException 
+     * @throws NoSuchAlgorithmException 
      */
-    public void processCommandLine(String[] args) throws FileNotFoundException, IllegalArgumentException, XPathExpressionException, VarNotFoundException
+    public void processCommandLine(String[] args) throws IllegalArgumentException, XPathExpressionException, VarNotFoundException, NoSuchAlgorithmException, IOException
 	{
 		// setup regex for extracting command line vars
 		Pattern varPattern = Pattern.compile("(.*?)=(.*)");
@@ -233,19 +287,18 @@ public class GlobalConfig {
 			} else {
 				// otherwise variable is taken to be a gtest executable.
 				// add ./ (or similar) if no path specified
-				String gtestAppPath = "";
-				String pathSeparator = System.getProperty("file.separator");
-				if (!arg.contains(pathSeparator))
-				{
-					gtestAppPath = "." + pathSeparator;
-				}
-				gtestAppPath += arg;
-				gtestAppPaths.add(gtestAppPath);
+				String gtestAppPath = PathsHelper.addRunLocalPathToFilenameWithoutPath(arg);
+				String gtestModuleName = PathsHelper.getFileNameNoExtensionFromPath(gtestAppPath);
+				TestModule testModule = new TestModule();
+				testModule.setModuleFilePath(gtestAppPath);
+				testModule.setModuleName(gtestModuleName);
+				testModule.setModuleDescription("Tests in the " + gtestModuleName + " google test harness");
+				gtestAppsList.add(testModule);
 			}
 		}
 		
 		// check conflicting conditions
-		if (gtestAppPaths.size() > 0 && varExists(SCHEDULE_FILE))
+		if (gtestAppsList.size() > 0 && varExists(SCHEDULE_FILE))
 			throw new IllegalArgumentException("Command argumants invalid.");
 		
 		if (varExists(SCHEDULE_FILE))
@@ -256,16 +309,16 @@ public class GlobalConfig {
 		}
 		
 		// check that we have an app to serve
-		if (gtestAppPaths.isEmpty())
+		if (gtestAppsList.isEmpty())
 			throw new IllegalArgumentException("No gtest app specified.");
 		
 		// check all gtest files exist
-		for (String gtestApp : gtestAppPaths)
+		for (TestModule testModule : gtestAppsList)
 		{
-			File f = new File(gtestApp);
+			File f = new File(testModule.getModuleFilePath());
 			if (!f.exists())
 			{
-				throw new FileNotFoundException("Gtest app \"" + gtestApp + "\" does not exist.");
+				throw new FileNotFoundException("Gtest app \"" + testModule.getModuleName() + "\" does not exist.");
 			}
 		}
 	}
