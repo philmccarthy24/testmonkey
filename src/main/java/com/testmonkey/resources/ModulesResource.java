@@ -1,4 +1,4 @@
-package com.stonepeak.monkey.resources;
+package com.testmonkey.resources;
 
 import java.util.List;
 
@@ -7,20 +7,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.stonepeak.monkey.GlobalConfig;
-import com.stonepeak.monkey.data.TestModule;
 import com.sun.jersey.api.provider.jaxb.XmlHeader;
+import com.testmonkey.GlobalConfig;
+import com.testmonkey.data.TestModule;
 
 @Path("/modules")
 public class ModulesResource {
     
 	/**
-	 * Main tests handler - gets list of tests from executable
+	 * REST handler for list of modules under test
 	 * @return
 	 */
     @GET @Path("/xml")
     @Produces(MediaType.APPLICATION_XML)
-    @XmlHeader("<?xml-stylesheet type=\"text/xsl\" href=\"/modules.xsl\"?>")
+    @XmlHeader("<?xml-stylesheet type=\"text/xsl\" href=\"/xmlstyle.xsl\"?>")
     public List<TestModule> getModulesAsXml() {
     	GlobalConfig config = GlobalConfig.getConfig();
 		return config.getGtestAppsList();

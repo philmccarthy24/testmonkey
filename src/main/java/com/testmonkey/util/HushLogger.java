@@ -1,4 +1,4 @@
-package com.stonepeak.monkey.util;
+package com.testmonkey.util;
 
 import org.eclipse.jetty.util.log.Logger;
 

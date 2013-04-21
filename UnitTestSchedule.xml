@@ -4,4 +4,5 @@
 					runallfrom="../gtest-1.6.0/xcode/Build/Products/$(Configuration)">
 	<UnitTestModule name="gtest ($(Configuration))" testfilter="*" enabled="true" description="Google test's own unit tests ($(Configuration) mode)">gtest_unittest</UnitTestModule>
 	<UnitTestModule testfilter="*" enabled="false">AnotherUnitTestModule.exe</UnitTestModule>
+	<UnitTestModule name="omega ($(Configuration))" testfilter="*" enabled="true" description="Unit test harness for the Omega project ($(Configuration) build)">omega_unittest</UnitTestModule>
 </UnitTestSchedule>

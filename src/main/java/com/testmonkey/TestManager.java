@@ -1,4 +1,4 @@
-package com.stonepeak.monkey;
+package com.testmonkey;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,9 +18,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.stonepeak.monkey.data.TestCaseResult;
-import com.stonepeak.monkey.data.TestModule;
-import com.stonepeak.monkey.data.TestSuite;
+import com.testmonkey.data.TestCaseResult;
+import com.testmonkey.data.TestModule;
+import com.testmonkey.data.TestSuite;
 
 public class TestManager {
 	

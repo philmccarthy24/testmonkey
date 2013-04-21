@@ -39,12 +39,6 @@ function linkClickHandler(link, evt)
 	if (cmd === "Run")
 	{
 		runSelectedTests(targetNodeId);
-	} else if (cmd === "About") {
-		alert("Test Monkey v1.0 created April 2013 by Phil McCarthy.\n\n" +
-				"This software is distributed under the MIT license,\n" +
-				"and is free for both commercial and non-commercial use.\n" +
-				"Images used are the property of the respective copyright holders.\n\n" +
-				"See Readme.md for further details");
 	} else if (cmd === "Redirect") {
 		// this is a request to redirect to a page
 		window.location.href = targetNodeId;
@@ -98,6 +92,12 @@ function addClickHandler(element, clickFunction)
 			evt = window.event;
 		}
 		var node = evt.target ? evt.target : evt.srcElement;
+		if (node.tagName !== "A" && node.parentNode === "A")
+		{
+			// rather than target being A element link text, an img element
+			// has been specified instead. We should move node up to its parent a element
+			node = node.parentNode;
+		}
 		clickFunction(node, evt);
 	};
     if (element.addEventListener) {

@@ -1,4 +1,4 @@
-package com.stonepeak.monkey;
+package com.testmonkey;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,9 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
 
-import com.stonepeak.monkey.data.TestModule;
-import com.stonepeak.monkey.exceptions.VarNotFoundException;
-import com.stonepeak.monkey.util.PathsHelper;
+import com.testmonkey.data.TestModule;
+import com.testmonkey.exceptions.VarNotFoundException;
+import com.testmonkey.util.PathsHelper;
 
 public class GlobalConfig {
 	

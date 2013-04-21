@@ -1,4 +1,4 @@
-package com.stonepeak.monkey.data;
+package com.testmonkey.data;
 
 public class TestCaseResult {
 	private String suiteName;

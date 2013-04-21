@@ -45,6 +45,7 @@ ul.topnav
  {
  	float: right;
 	margin:0;
+	margin-top:2em;
 	padding:0;
 }
 ul.topnav li {
@@ -52,23 +53,81 @@ ul.topnav li {
 	padding:0;
 	margin:0;
 }
+
+/* navigation icons */
 ul.topnav li a {
-	padding: 20px 0px 10px 40px;
+	padding-left: 15px;
+	padding-bottom: 10px;
 	float: left;
 	width: auto;
-	color: #666666;
-	text-shadow: rgba(255, 255, 255, 0.8) 0 2px 0;
-	text-align: center;
-	text-decoration: none;
-	letter-spacing: -1px;
-	font-size: 1.5em;
-}
-ul.topnav li a:hover {
-	text-decoration: underline;
-	color: #444;
 }
 
-#tests {
+ul.topnav > li:nth-child(1) > a {
+	background:transparent url('images/nav/home.png') center top no-repeat;
+    height: 24px;
+    width: 29px;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+ul.topnav > li:nth-child(1) > a:hover {
+	background:transparent url('images/nav/homehover.png') center top no-repeat;
+}
+
+ul.topnav > li:nth-child(2) > a {
+	background:transparent url('images/nav/selectall.png') center top no-repeat;
+    height: 25px;
+    width: 22px;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+ul.topnav > li:nth-child(2) > a:hover {
+	background:transparent url('images/nav/selectallhover.png') center top no-repeat;
+}
+
+ul.topnav > li:nth-child(3) > a {
+	background:transparent url('images/nav/unselectall.png') center top no-repeat;
+    height: 25px;
+    width: 22px;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+ul.topnav > li:nth-child(3) > a:hover {
+	background:transparent url('images/nav/unselectallhover.png') center top no-repeat;
+}
+
+ul.topnav > li:nth-child(4) > a {
+	background:transparent url('images/nav/launchall.png') center top no-repeat;
+    height: 25px;
+    width: 31px;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+ul.topnav > li:nth-child(4) > a:hover {
+	background:transparent url('images/nav/launchallhover.png') center top no-repeat;
+}
+
+ul.topnav > li:last-child > a {
+	background:transparent url('images/nav/about.png') center top no-repeat;
+    height: 24px;
+    width: 32px;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+ul.topnav > li:last-child > a:hover {
+	background:transparent url('images/nav/abouthover.png') center top no-repeat;
+}
+
+#page {
 	clear: both;
 	background: #fff;
 	padding: 20px;
@@ -85,7 +144,7 @@ ul.topnav li a:hover {
 	border-radius: 0 0 5px 5px;
 }
 
-#tests h2 {
+#page h2 {
 	font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
 	text-align: left;
 	font-size: 2em;
@@ -93,7 +152,7 @@ ul.topnav li a:hover {
 }
 
 ul.nav
- {
+{
  	float: left;
 	margin:0;
 	padding:0;
@@ -226,4 +285,33 @@ tr.failed > td {
 	font-size: 1em;
 	font-weight: bold;
 }
+
+/* modules page styling */
+
+tr.modulerow:hover > td {
+	background-color: #FEF9ED;
+}
+
+tr.modulerow a {
+	color: #333333;
+	text-decoration: none;
+	vertical-align: middle;
+	text-align: left;
+}
+
+tr.modulerow span {
+	background-image: url('images/runapp.png');
+	background-repeat: no-repeat;
+	background-position: right center;
+	vertical-align: middle;
+	height: 32px;
+	width: 32px;
+	display: block;
+	margin-left:50px;
+}
+
+tr.modulerow:hover span {
+	background-image: url('images/runappsel.png');
+}
+
 

@@ -1,11 +1,11 @@
-package com.stonepeak.monkey.data;
+package com.testmonkey.data;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.stonepeak.monkey.util.PathsHelper;
+import com.testmonkey.util.PathsHelper;
 
 @XmlRootElement(name="testmodule")
 @XmlAccessorType(XmlAccessType.FIELD)

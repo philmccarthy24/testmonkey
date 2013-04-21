@@ -1,4 +1,4 @@
-package com.stonepeak.monkey.util;
+package com.testmonkey.util;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.stonepeak.monkey.GlobalConfig;
-import com.stonepeak.monkey.exceptions.VarNotFoundException;
+import com.testmonkey.GlobalConfig;
+import com.testmonkey.exceptions.VarNotFoundException;
 
 public class PathsHelper {
 
@@ -30,6 +30,12 @@ public class PathsHelper {
 		return fileNameNoExtension;
     }
     
+    /**
+     * Add "./" or equivalent to file names without paths, so
+     * Runtime.getRuntime().exec is able to execute the app
+     * @param pathName
+     * @return
+     */
     public static String addRunLocalPathToFilenameWithoutPath(String pathName)
     {
 		String pathSeparator = System.getProperty("file.separator");

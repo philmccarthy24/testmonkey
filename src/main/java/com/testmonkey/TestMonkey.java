@@ -1,4 +1,4 @@
-package com.stonepeak.monkey;
+package com.testmonkey;
 
 import java.util.logging.Level;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
@@ -10,10 +10,10 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import com.stonepeak.monkey.util.HushLogger;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+import com.testmonkey.util.HushLogger;
 
-public class Main {
+public class TestMonkey {
 	
 	private static final String WEB_SERVICE_ROOT_PATH = "/rest";
 	private static final String JAR_WEB_CONTENT_DIRECTORY = "html";
@@ -21,12 +21,21 @@ public class Main {
 	private static final int DEFAULT_PORT_NUM = 8080;
 	private static final String PORT_COMMAND_ARG = "Port";
 	
+	/**
+	 * Main method
+	 * @param args
+	 */
     public static void main(String[] args)
     {
-    	Main app = new Main();
+    	TestMonkey app = new TestMonkey();
     	app.runApplication(args);
     }
     
+    /**
+     * method that main method delegates too. Allows us to add
+     * non-blocking web server behaviour if we want to in future
+     * @param args
+     */
     public void runApplication(String[] args)
     {
     	// process command line args and set global app config
@@ -77,7 +86,7 @@ public class Main {
         context.setContextPath(WEB_SERVICE_ROOT_PATH);
         
         ServletHolder h = new ServletHolder(new ServletContainer());
-        h.setInitParameter("com.sun.jersey.config.property.packages", "com.stonepeak.monkey.resources");
+        h.setInitParameter("com.sun.jersey.config.property.packages", "com.testmonkey.resources");
 		h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         context.addServlet(h, "/*");
         
@@ -103,7 +112,8 @@ public class Main {
         	// set the root redirect to go to the modules page
         	redirect.setReplacement("/rest/modules/xml");
         } else {
-        	// set the root redirect to go to the only module's tests
+        	// set the root redirect to go to the only module's tests - no
+        	// point in the user just selecting a single module
         	redirect.setReplacement("/rest/tests/xml/0");
         }
         rewrite.addRule(redirect);
@@ -120,7 +130,7 @@ public class Main {
     private void suppressFrameworkLogging()
     {
     	// Turn off jetty logging to stderr
-    	System.setProperty( "org.eclipse.jetty.util.log.class", "com.stonepeak.monkey.HushLogger");
+    	System.setProperty( "org.eclipse.jetty.util.log.class", "com.testmonkey.HushLogger");
     	org.eclipse.jetty.util.log.Log.setLog(new HushLogger());
     	// Turn off jersey logging
     	java.util.logging.Logger jerseyLogger = java.util.logging.Logger.getLogger("com.sun.jersey");

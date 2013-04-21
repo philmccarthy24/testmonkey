@@ -1,4 +1,4 @@
-package com.stonepeak.monkey;
+package com.testmonkey;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -15,10 +15,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.stonepeak.monkey.data.TestModule;
-import com.stonepeak.monkey.exceptions.VarNotFoundException;
-import com.stonepeak.monkey.util.Hash;
-import com.stonepeak.monkey.util.PathsHelper;
+import com.testmonkey.data.TestModule;
+import com.testmonkey.exceptions.VarNotFoundException;
+import com.testmonkey.util.Hash;
+import com.testmonkey.util.PathsHelper;
 
 public class TestSchedule {
 	

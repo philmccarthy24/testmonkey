@@ -1,4 +1,4 @@
-package com.stonepeak.monkey.resources;
+package com.testmonkey.resources;
 
 import java.util.List;
 
@@ -8,12 +8,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.stonepeak.monkey.GlobalConfig;
-import com.stonepeak.monkey.TestManager;
-import com.stonepeak.monkey.data.TestCaseResult;
-import com.stonepeak.monkey.data.TestModule;
-import com.stonepeak.monkey.data.TestSuite;
 import com.sun.jersey.api.provider.jaxb.XmlHeader;
+import com.testmonkey.GlobalConfig;
+import com.testmonkey.TestManager;
+import com.testmonkey.data.TestCaseResult;
+import com.testmonkey.data.TestModule;
+import com.testmonkey.data.TestSuite;
 
 @Path("/tests")
 public class TestResource {
@@ -44,7 +44,7 @@ public class TestResource {
 	 */
     @GET @Path("xml/{appId}")
     @Produces(MediaType.APPLICATION_XML)
-    @XmlHeader("<?xml-stylesheet type=\"text/xsl\" href=\"/tests.xsl\"?>")
+    @XmlHeader("<?xml-stylesheet type=\"text/xsl\" href=\"/xmlstyle.xsl\"?>")
     public List<TestSuite> handleTestsAsXml(@PathParam("appId") int nAppId) {
     	List<TestSuite> testSuites = null;
     	try {
