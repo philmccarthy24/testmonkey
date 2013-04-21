@@ -2,6 +2,13 @@ package com.stonepeak.monkey.util;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.stonepeak.monkey.GlobalConfig;
+import com.stonepeak.monkey.exceptions.VarNotFoundException;
 
 public class PathsHelper {
 
@@ -53,5 +60,34 @@ public class PathsHelper {
 		}
 		joined += secondPart;
 		return joined;
+    }
+    
+    /**
+     * If variables are present in the passed-in string, attempt to substitute
+     * them for command vars specified on the command line
+     * @throws VarNotFoundException 
+     */
+    public static String expandVars(String nonExpanded) throws VarNotFoundException
+    {
+    	String expandedString = nonExpanded;
+    	Pattern varPattern = Pattern.compile("\\$\\((.+?)\\)");
+    	GlobalConfig config = GlobalConfig.getConfig();
+		Matcher m = varPattern.matcher(nonExpanded);
+		Map<String, String> possibleReplacementMap = new HashMap<String, String>();
+		while (m.find()) // for each $(...) variable in the string
+		{
+			String varMatched = m.group(1);
+			if (config.varExists(varMatched))
+			{
+				//variable can be replaced
+				possibleReplacementMap.put("\\$\\(" + varMatched + "\\)", config.getVar(varMatched));
+			}
+		}
+		// now carry out the specific replacements
+		for (String key : possibleReplacementMap.keySet())
+		{
+			expandedString = expandedString.replaceAll(key, possibleReplacementMap.get(key));
+		}
+		return expandedString;
     }
 }

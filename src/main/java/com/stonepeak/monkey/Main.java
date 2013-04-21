@@ -1,11 +1,6 @@
 package com.stonepeak.monkey;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.xml.xpath.XPathExpressionException;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;

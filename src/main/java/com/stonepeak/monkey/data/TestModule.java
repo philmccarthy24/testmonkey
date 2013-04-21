@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.stonepeak.monkey.util.PathsHelper;
+
 @XmlRootElement(name="testmodule")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TestModule {
@@ -32,6 +34,12 @@ public class TestModule {
 		this.moduleName = moduleName;
 	}
 	/**
+	 * @param fromPath the path to generate the module name from
+	 */
+	public void setModuleDefaultName(String fromPath) {
+		this.moduleName = PathsHelper.getFileNameNoExtensionFromPath(fromPath);
+	}
+	/**
 	 * @return the moduleDescription
 	 */
 	public String getModuleDescription() {
@@ -42,6 +50,12 @@ public class TestModule {
 	 */
 	public void setModuleDescription(String moduleDescription) {
 		this.moduleDescription = moduleDescription;
+	}
+	/**
+	 * @param moduleName the module name to generate the description from
+	 */
+	public void setModuleDefaultDescription(String moduleName) {
+		this.moduleDescription = "Tests in the " + moduleName + " google test harness";
 	}
 	/**
 	 * @return the moduleFilePath
