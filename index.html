@@ -10,7 +10,7 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Testmonkey by philmccarthy24</title>
+    <title>Test Monkey by philmccarthy24</title>
   </head>
 
   <body>
@@ -18,8 +18,8 @@
       <div class="inner">
 
         <header>
-          <h1>Testmonkey</h1>
-          <h2>Google test web-based test runner</h2>
+          <h1>Test Monkey</h1>
+          <h2>Google Test web based test runner</h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -31,40 +31,102 @@
         <hr>
 
         <section id="main_content">
-          <h3>TestMonkey v1.0 web-based test runner for google test</h3>
+          <h1>Test Monkey v1.1</h1>
 
-<p>This software allows C++ test harness applications compiled with the <a href="http://code.google.com/p/googletest">google test library</a> to be run easily and for unit test results to be clearly displayed in a web browser.</p>
+<h2>Web based test runner for the Google Test framework</h2>
 
-<p>To build Test Monkey you will need to <a href="http://maven.apache.org/download.cgi">download maven</a>,
+<h3>Overview</h3>
+
+<p>This software allows C++ test harness applications compiled with the <a href="http://code.google.com/p/googletest">google test library</a> to be run easily, and for unit test results to be clearly displayed in a web browser.</p>
+
+<h3>Getting started</h3>
+
+<p>There are two ways to run the application:</p>
+
+<ol>
+<li>Specify which test harness applications will be run from the command line;</li>
+<li>Specify a test schedule file, containing details of the test harness applications to run.</li>
+</ol><p>In both cases, when Test Monkey starts, point your web browser at <em>http://localhost:8080</em> (or a
+different port if specified) to use the application. Pressing <em>ctrl-c</em> will then stop the embedded web server
+and shut the application down.</p>
+
+<p>Note the google test harness executables under test can be updated while the web server is running.</p>
+
+<h4>Specifying test executables</h4>
+
+<p>To run the application use:</p>
+
+<pre><code>java -jar testmonkey-1.1.jar path/unit_test_harness1.exe path/unit_test_harness2.exe [Port=Portnum]
+</code></pre>
+
+<p>where <em>Port</em> is an optional parameter, and specifies the port the embedded web server will listen on.</p>
+
+<h4>Using a Test Schedule file</h4>
+
+<p>To run the application use:</p>
+
+<pre><code>java -jar testmonkey-1.1.jar schedule=tests.xml [Variable=Value] [Port=Portnum]
+</code></pre>
+
+<p>where tests.xml is the path to a test schedule xml file that validates against <a href="https://github.com/philmccarthy24/testmonkey/blob/master/UnitTestScheduleSchema.xsd">this schema</a>, and as above
+<em>Port</em> specifies the web server port.</p>
+
+<p>The test schedule xml file may contain a number of user defined variables of the form <em>$(Variable)</em>.
+These variables are replaced at run time with the corresponding value if the variable is passed in as an optional
+parameter to Test Monkey. This is useful for instance to target <em>/debug</em> or <em>/release</em> build directories.</p>
+
+<p>The schedule file takes the form:</p>
+
+<pre><code>&lt;UnitTestSchedule runallfrom="..."&gt;
+    &lt;UnitTestModule runfrom="..." name="..." description="..." testfilter="..." enabled="true"&gt;unit_test_harness.exe&lt;/UnitTestModule&gt;
+    &lt;UnitTestModule&gt; ... &lt;/UnitTestModule&gt;
+&lt;/UnitTestSchedule&gt;
+</code></pre>
+
+<ul>
+<li>The <em>runallfrom</em> attribute specifies where to look for <strong>all</strong> <em>unit_test_harness</em> files. If specified, the <em>runfrom</em> attributes are ignored.</li>
+<li>If the <em>runallfrom</em> attribute is not present, the <em>runfrom</em> attributes specify the location of each <em>unit_test_harness</em> on a per-file basis.
+Note specifying paths with these attributes is optional and <em>unit_test_harness</em> can contain a path.</li>
+<li>The optional <em>name</em> attribute is the friendly name used on the test modules list page.</li>
+<li>The optional <em>description</em> attribute is the test module description used on the test modules list page.</li>
+<li>The mandatory <em>testfilter</em> attribute is not used by Test Monkey (as this schema is shared - set it to "*").</li>
+<li>The mandatory <em>enabled</em> attribute (true or false) determines whether the test module is included by Test Monkey or not.</li>
+</ul><p>Note the test schedule file may be updated while Test Monkey is running - any changes will be detected and the file reprocessed.</p>
+
+<h3>The web interface</h3>
+
+<p>This should be self explanatory! Click on a test module from the list to open the list of tests available (note if only one module
+is under test, the module list is not shown, and only tests available from that single module are displayed). Select and deselect tests
+you wish to run. You may select and deselect all tests, all tests in a suite, or only individual tests.
+Selected tests can then be executed, again either all selected tests, tests in a suite, or only individual tests.</p>
+
+<h3>Building the software</h3>
+
+<p>Test Monkey is a Java application. To build it you will need to <a href="http://maven.apache.org/download.cgi">download maven</a>,
 and also get the latest <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">jdk</a> for your platform.
-I'd also recommend <a href="http://www.eclipse.org/downloads/packages/eclipse-classic-422/junosr2">getting eclipse</a> - an eclipse
+I'd also recommend <a href="http://www.eclipse.org/downloads/packages/eclipse-classic-422/junosr2">getting the eclipse IDE</a> - an eclipse
 project is included in the repository. To get going you will need to:</p>
 
 <ul>
 <li>ensure the maven and java bin directories are on your path</li>
-<li>run "mvn package" to download all the dependencies to your local maven repo and build the single large testmonkey jar file in the target subdir. </li>
-<li>from the terminal / command prompt, start the embedded web server with "java -jar testmonkey-1.0.jar [name of google test application]". Note you might need to prepend the name of the test app with "./" if running from the same directory</li>
-<li>point your web browser at http://localhost:8080</li>
-<li>use the interface to run individual tests / test suites.</li>
-<li>press ctrl-c from the command prompt to stop the web server.</li>
-</ul><p>Note the google test harness executable under test can be updated while the web server is running.</p>
+<li>run "mvn package" from the <em>testmonkey</em> source directory to download all the dependencies to your local maven repository and build
+the single large testmonkey jar file in the <em>target</em> sub-directory. </li>
+</ul><h3>Compatibility</h3>
 
 <p>The following browsers have been tested:</p>
 
 <ul>
+<li>Google Chrome</li>
 <li>Firefox 19.0.2</li>
-<li>Safari 6.0.3</li>
+<li>Safari 6.0.3 (known issue with CSS background images sometimes disappearing)</li>
 <li>Internet Explorer 10 (works with minor display issues)</li>
-<li>Google Chrome (recent versions)</li>
 </ul><p>Internet Explorer versions prior to 10 are not supported due to Microsoft's historic lack of web standards compliance.</p>
-
-<p>Enjoy!</p>
 
 <p>Phil McCarthy, April 2013</p>
         </section>
 
         <footer>
-          Testmonkey is maintained by <a href="https://github.com/philmccarthy24">philmccarthy24</a><br>
+          Test Monkey is maintained by <a href="https://github.com/philmccarthy24">philmccarthy24</a><br>
           This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
         </footer>
 
