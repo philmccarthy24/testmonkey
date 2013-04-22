@@ -10,6 +10,8 @@
 				<script type="text/javascript" src="/monkeybusiness.js"></script>
 			</xsl:if>
 			<link rel="stylesheet" href="/monkeystyle.css" />
+			<!-- icon for bookmark menus etc -->
+			<link rel="icon" type="image/png" href="/images/favicon.png" />
 		</head>
 		<body>
 			<h1>Test<img src="/images/monkey.svg" />Monkey</h1>
