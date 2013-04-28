@@ -1,4 +1,4 @@
-package com.testmonkey.data;
+package com.testmonkey.model;
 
 import java.util.ArrayList;
 import java.util.List;

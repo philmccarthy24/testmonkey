@@ -1,4 +1,4 @@
-package com.testmonkey;
+package com.testmonkey.app;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -13,11 +13,12 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import com.testmonkey.data.TestModule;
 import com.testmonkey.exceptions.VarNotFoundException;
-import com.testmonkey.util.Hash;
+import com.testmonkey.model.TestModule;
+import com.testmonkey.util.HashMethodFactory;
+import com.testmonkey.util.IHashMethod;
+import com.testmonkey.util.InputSourceFactory;
 import com.testmonkey.util.PathsHelper;
 
 public class TestSchedule {
@@ -63,7 +64,8 @@ public class TestSchedule {
 		if (testScheduleHash != null)
     	{
 	    	// get current hash of schedule file
-	    	String currentScheduleHash = Hash.sha1(scheduleFileName);
+			IHashMethod hasher = HashMethodFactory.buildHashMethod();
+	    	String currentScheduleHash = hasher.getFileHash(scheduleFileName);
 			if (testScheduleHash.equals(currentScheduleHash))
 			{
 				// hashes are same - return false
@@ -85,15 +87,14 @@ public class TestSchedule {
     	testModules.clear();
     	
     	XPath xpath = XPathFactory.newInstance().newXPath();
-		InputSource inputSource = new InputSource(scheduleFileName);
 		
 		// get runallfrom attrib from root node
-		Node unitTestScheduleNode = (Node) xpath.evaluate("UnitTestSchedule", inputSource, XPathConstants.NODE);
+		Node unitTestScheduleNode = (Node) xpath.evaluate("UnitTestSchedule", InputSourceFactory.buildInputSource(scheduleFileName), XPathConstants.NODE);
 		NamedNodeMap testScheduleAttribs = unitTestScheduleNode.getAttributes();
 		Node runAllAttrib = testScheduleAttribs.getNamedItem("runallfrom");
 		
 		// iterate over enabled UnitTestModule nodes
-		NodeList unitTestModuleNodes = (NodeList) xpath.evaluate("//UnitTestModule[@enabled='true']", inputSource, XPathConstants.NODESET);
+		NodeList unitTestModuleNodes = (NodeList) xpath.evaluate("//UnitTestModule[@enabled='true']", InputSourceFactory.buildInputSource(scheduleFileName), XPathConstants.NODESET);
 		for (int i = 0; i < unitTestModuleNodes.getLength(); i++)
 		{
 			String gtestAppPath = "";
@@ -151,7 +152,8 @@ public class TestSchedule {
 		
 		// update schedule file hash so we use cached TestModule objects if xml unchanged,
 		// rather than read them all in again
-		testScheduleHash = Hash.sha1(scheduleFileName);
+		IHashMethod hasher = HashMethodFactory.buildHashMethod();
+		testScheduleHash = hasher.getFileHash(scheduleFileName);
     }
 
 }

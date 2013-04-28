@@ -29,6 +29,17 @@
 		    <artifactId>jetty-rewrite</artifactId>
 		    <version>LATEST</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>LATEST</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>LATEST</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -87,7 +98,7 @@
 			                <transformers>
 			                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 			                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-			                        <mainClass>com.testmonkey.TestMonkey</mainClass>
+			                        <mainClass>com.testmonkey.app.TestMonkey</mainClass>
 			                    </transformer>
 			                </transformers>
 			            </configuration>

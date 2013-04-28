@@ -1,4 +1,4 @@
-package com.testmonkey.data;
+package com.testmonkey.model;
 
 public class TestCaseResult {
 	private String suiteName;

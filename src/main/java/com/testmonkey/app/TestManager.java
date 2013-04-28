@@ -1,4 +1,4 @@
-package com.testmonkey;
+package com.testmonkey.app;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,22 +18,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.testmonkey.data.TestCaseResult;
-import com.testmonkey.data.TestModule;
-import com.testmonkey.data.TestSuite;
+import com.testmonkey.model.TestCaseResult;
+import com.testmonkey.model.TestModule;
+import com.testmonkey.model.TestSuite;
+import com.testmonkey.util.IRunCommandMethod;
+import com.testmonkey.util.RunCommandMethodFactory;
+import com.testmonkey.util.InputSourceFactory;
 
-public class TestManager {
+public class TestManager implements IGTestRunner {
 	
 	private static final String GET_TEST_ARG = "--gtest_list_tests";
 	private static final String RUN_TEST_ARG = "--gtest_filter";
 	private static final String OUTPUT_XML_ARG = "--gtest_output=xml";
 	
-	/**
-	 * Constructor
-	 */
-	public TestManager()
-	{
-	}
+	private IRunCommandMethod commandRunner = RunCommandMethodFactory.buildRunCommandMethod();
 	
 	/**
 	 * Gets list of tests from gtest binary under test, and returns a list
@@ -49,8 +47,9 @@ public class TestManager {
 		
 		try {
 			String line = null;
-			Process gtestApp = Runtime.getRuntime().exec(gtestGetTestsCmd);
-			BufferedReader input = new BufferedReader(new InputStreamReader(gtestApp.getInputStream()));
+			commandRunner.runCommand(gtestGetTestsCmd);
+			
+			BufferedReader input = new BufferedReader(new InputStreamReader(commandRunner.getCmdOutput()));
 			TestSuite currentSuite = null;
 			while ((line = input.readLine()) != null) {
 				
@@ -115,20 +114,20 @@ public class TestManager {
 			.append(RUN_TEST_ARG).append("=").append(gtestFilter).append(" ")
 			.append(OUTPUT_XML_ARG).append(":").append(guid).append(".xml");
 		
-		Process gtestApp = Runtime.getRuntime().exec(testCommandBuilder.toString());
+		commandRunner.runCommand(testCommandBuilder.toString());
 		
-		// the following prevents Process.waitFor() hanging under windows
+		// the following prevents eg Process.waitFor() hanging under windows
 		// exhaust input stream
-		BufferedInputStream in = new BufferedInputStream(gtestApp.getInputStream());
+		BufferedInputStream in = new BufferedInputStream(commandRunner.getCmdOutput());
 		byte[] bytes = new byte[4096];
 		while (in.read(bytes) != -1) {}
 					
 		// exhaust error stream
-		BufferedInputStream err = new BufferedInputStream(gtestApp.getErrorStream());
+		BufferedInputStream err = new BufferedInputStream(commandRunner.getCmdError());
 		while (err.read(bytes) != -1) {}
 		
 		// wait for the gtest app to terminate
-		gtestApp.waitFor();
+		commandRunner.waitForCompletion();
 		
 		return guid;
 	}
@@ -144,7 +143,7 @@ public class TestManager {
 		
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		String expression = "//testcase[@status='run']";	// select all testcase nodes with attribute status="run"
-		InputSource inputSource = new InputSource(testRunId + ".xml");
+		InputSource inputSource = InputSourceFactory.buildInputSource(testRunId + ".xml");
 		try {
 			NodeList testCaseNodes = (NodeList) xpath.evaluate(expression, inputSource, XPathConstants.NODESET);
 			

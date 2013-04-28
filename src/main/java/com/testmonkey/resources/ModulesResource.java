@@ -8,8 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.provider.jaxb.XmlHeader;
-import com.testmonkey.GlobalConfig;
-import com.testmonkey.data.TestModule;
+import com.testmonkey.app.GlobalConfig;
+import com.testmonkey.model.TestModule;
 
 @Path("/modules")
 public class ModulesResource {

@@ -1,7 +1,5 @@
-package com.testmonkey;
+package com.testmonkey.app;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -12,8 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
 
-import com.testmonkey.data.TestModule;
 import com.testmonkey.exceptions.VarNotFoundException;
+import com.testmonkey.model.TestModule;
 import com.testmonkey.util.PathsHelper;
 
 public class GlobalConfig {
@@ -193,25 +191,8 @@ public class GlobalConfig {
 		if (gtestAppsList.size() > 0 && testSchedule != null)
 			throw new IllegalArgumentException("Command arguments invalid.");
 		
-		List<TestModule> testModules = gtestAppsList;
-		if (testSchedule != null)
-		{
-			// this triggers first read/processing of schedule xml
-			testModules = testSchedule.getTestModuleListFromSchedule();
-		}
-		
 		// check that we have an app to serve
-		if (testModules.isEmpty())
+		if (getGtestAppCount() == 0)
 			throw new IllegalArgumentException("No gtest app specified.");
-		
-		// check all gtest files exist
-		for (TestModule testModule : testModules)
-		{
-			File f = new File(testModule.getModuleFilePath());
-			if (!f.exists())
-			{
-				throw new FileNotFoundException("Gtest app \"" + testModule.getModuleFilePath() + "\" does not exist.");
-			}
-		}
 	}
 }

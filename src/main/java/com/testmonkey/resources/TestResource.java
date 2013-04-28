@@ -9,16 +9,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.provider.jaxb.XmlHeader;
-import com.testmonkey.GlobalConfig;
-import com.testmonkey.TestManager;
-import com.testmonkey.data.TestCaseResult;
-import com.testmonkey.data.TestModule;
-import com.testmonkey.data.TestSuite;
+import com.testmonkey.app.GTestRunnerFactory;
+import com.testmonkey.app.GlobalConfig;
+import com.testmonkey.app.IGTestRunner;
+import com.testmonkey.model.TestCaseResult;
+import com.testmonkey.model.TestModule;
+import com.testmonkey.model.TestSuite;
 
 @Path("/tests")
 public class TestResource {
 	
-	private TestManager testManager = new TestManager();
+	private IGTestRunner testRunner = GTestRunnerFactory.buildGTestRunner();
     
 	/**
 	 * Main tests handler - gets list of tests from executable
@@ -31,7 +32,7 @@ public class TestResource {
     	try {
     		GlobalConfig config = GlobalConfig.getConfig();
     		TestModule gtestApp = config.getGtestApp(nAppId);
-    		testSuites = testManager.getTests(gtestApp);
+    		testSuites = testRunner.getTests(gtestApp);
 		} catch (IndexOutOfBoundsException iobe) {
 			System.out.println("App id specified does not exist.");
 		}
@@ -50,7 +51,7 @@ public class TestResource {
     	try {
     		GlobalConfig config = GlobalConfig.getConfig();
     		TestModule gtestApp = config.getGtestApp(nAppId);
-    		testSuites = testManager.getTests(gtestApp);
+    		testSuites = testRunner.getTests(gtestApp);
     	} catch (IndexOutOfBoundsException iobe) {
     		System.out.println("App id specified does not exist.");
     	}
@@ -70,10 +71,10 @@ public class TestResource {
     	try {
         	// run the test
     		TestModule gtestApp = GlobalConfig.getConfig().getGtestApp(nAppId);
-    		String testRunId = testManager.runTests(gtestApp, filter);
+    		String testRunId = testRunner.runTests(gtestApp, filter);
     		
     		// convert the results to POJOs
-        	results = testManager.getTestResults(testRunId);
+        	results = testRunner.getTestResults(testRunId);
     	} catch (IndexOutOfBoundsException iobe) {
     		System.out.println("App id specified does not exist.");
     	} catch (Exception e) {

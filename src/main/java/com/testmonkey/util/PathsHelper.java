@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.testmonkey.GlobalConfig;
+import com.testmonkey.app.GlobalConfig;
 import com.testmonkey.exceptions.VarNotFoundException;
 
 public class PathsHelper {

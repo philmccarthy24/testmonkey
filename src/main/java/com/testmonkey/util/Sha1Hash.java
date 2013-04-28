@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Hash {
+public class Sha1Hash implements IHashMethod {
 	
 	private static final String SHA1_HASH_TYPE = "SHA1";
 
-	public static String sha1(String fileName) throws NoSuchAlgorithmException, IOException
+	public String getFileHash(String fileName) throws NoSuchAlgorithmException, IOException
 	{
 	    MessageDigest md = MessageDigest.getInstance(SHA1_HASH_TYPE);
 	    FileInputStream fis = new FileInputStream(fileName);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="html" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
@@ -18,13 +19,19 @@
   <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.9.2/jackson-mapper-asl-1.9.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-jaxrs/1.9.2/jackson-jaxrs-1.9.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-xc/1.9.2/jackson-xc-1.9.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-servlet/9.0.0.v20130308/jetty-servlet-9.0.0.v20130308.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-security/9.0.0.v20130308/jetty-security-9.0.0.v20130308.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-server/9.0.0.v20130308/jetty-server-9.0.0.v20130308.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-servlet/9.0.2.v20130417/jetty-servlet-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-security/9.0.2.v20130417/jetty-security-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-server/9.0.2.v20130417/jetty-server-9.0.2.v20130417.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/orbit/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-http/9.0.0.v20130308/jetty-http-9.0.0.v20130308.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-util/9.0.0.v20130308/jetty-util-9.0.0.v20130308.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-io/9.0.0.v20130308/jetty-io-9.0.0.v20130308.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-rewrite/9.0.0.v20130308/jetty-rewrite-9.0.0.v20130308.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-client/9.0.0.v20130308/jetty-client-9.0.0.v20130308.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-http/9.0.2.v20130417/jetty-http-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-util/9.0.2.v20130417/jetty-util-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-io/9.0.2.v20130417/jetty-io-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-rewrite/9.0.2.v20130417/jetty-rewrite-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-client/9.0.2.v20130417/jetty-client-9.0.2.v20130417.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.11/junit-4.11.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jmock/jmock-junit4/2.6.0/jmock-junit4-2.6.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.6.0/jmock-2.6.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit-dep/4.4/junit-dep-4.4.jar"/>
 </classpath>
