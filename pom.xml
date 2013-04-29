@@ -37,8 +37,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jmock</groupId>
+			<artifactId>jmock</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
-			<version>LATEST</version>
+			<version>2.6.0</version>
 		</dependency>
 	</dependencies>
 

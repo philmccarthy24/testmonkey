@@ -90,7 +90,7 @@ public class TestScheduleTest {
         context.assertIsSatisfied(); // were the mocks called with the right params in the right order?
         
 		assertEquals(1, testModules.size());
-		assertEquals("/test/directory/replaced/ping/fakeGTestApp", testModules.get(0).getModuleFilePath());
+		assertEquals("/test/directory/replaced/ping" + System.getProperty("file.separator") + "fakeGTestApp", testModules.get(0).getModuleFilePath());
 	}
 
 }
