@@ -58,7 +58,7 @@ public class TestManager implements IGTestRunner {
 				{
 					// this is the first line returned by the gtest app
 					continue;
-				} else if (line.matches("\\S+\\.")) {
+				} else if (line.matches("\\S+\\.(?:\\s*#.*)?")) {
 					// this is a new test suite name
 					if (currentSuite != null)
 					{
@@ -66,8 +66,8 @@ public class TestManager implements IGTestRunner {
 						tests.add(currentSuite);
 					}
 					currentSuite = new TestSuite();
-					// trim the last dot from the test suite name
-					line = line.substring(0,  line.length() - 1);
+					// trim last dot and possibly comments from test suite name
+					line = line.replaceFirst("\\..*", "");
 					currentSuite.setSuiteName(line);
 					currentSuite.setTestModule(gtestAppInfo.getModuleName());
 				} else if (line.matches("\\s{2}\\S+")) {

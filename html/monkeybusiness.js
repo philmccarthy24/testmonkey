@@ -54,7 +54,7 @@ function linkClickHandler(link, evt)
 		// type of link
 		testRowIterator.forEachTestUnderElement(
 			targetNodeId, 
-			testRowIterator.noFilter, 	// operate on all rows
+			testRowIterator.enabledGTestFilter, 	// operate on rows representing runnable (ie not disabled in C++) tests
 			function(row) {
 				// update checkbox state
 				var chkbox = row.querySelector("input[type=checkbox]");

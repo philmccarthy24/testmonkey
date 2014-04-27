@@ -1,4 +1,4 @@
-# Test Monkey v1.1
+# Test Monkey v1.2
 ## Web based test runner for the Google Test framework
 
 ### Overview
@@ -20,14 +20,14 @@ Note the google test harness executables under test can be updated while the web
 #### Specifying test executables
 To run the application use:
 	
-	java -jar testmonkey-1.1.jar path/unit_test_harness1.exe path/unit_test_harness2.exe [Port=Portnum]
+	java -jar testmonkey-1.2.jar path/unit_test_harness1.exe path/unit_test_harness2.exe [Port=Portnum]
 	
 where *Port* is an optional parameter, and specifies the port the embedded web server will listen on.
 
 #### Using a Test Schedule file
 To run the application use:
 
-	java -jar testmonkey-1.1.jar schedule=tests.xml [Variable=Value] [Port=Portnum]
+	java -jar testmonkey-1.2.jar schedule=tests.xml [Variable=Value] [Port=Portnum]
 
 where tests.xml is the path to a test schedule xml file that validates against [this schema]
 (https://github.com/philmccarthy24/testmonkey/blob/master/UnitTestScheduleSchema.xsd), and as above
@@ -81,4 +81,11 @@ The following browsers have been tested:
 
 Internet Explorer versions prior to 10 are not supported due to Microsoft's historic lack of web standards compliance.
 
-Phil McCarthy, April 2013
+### Changelog
+
+Release v1.2 (minor bugfix update):
+
+- Improvement in rest server test name parsing, recognition of comments after test case name
+- Updates to front end (XSLT and javascript) to prevent gtest test suites or cases marked as DISABLED_ from being enabled or selectable.
+
+Phil McCarthy, April 2014

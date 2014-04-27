@@ -51,6 +51,7 @@
 									<a id="Run.{testsuite}" href="">Run selected tests in suite</a>
 								</li>
 							</ul>
+							
 							<table id="{testsuite}">
 								<thead>
 									<tr>
@@ -65,15 +66,28 @@
 								</thead>
 								<tbody>
 									<xsl:for-each select=".//testcase">
-										<tr class="enabled" id="{../../testsuite}.{text()}">
-											<td><input type="checkbox" checked="checked" /></td>
-											<td><xsl:value-of select="text()"/></td>
+										<tr id="{../../testsuite}.{text()}">
+										<xsl:attribute name="class">
+											<xsl:choose>
+									        	<xsl:when test="starts-with(../../testsuite, 'DISABLED_') or starts-with(text(), 'DISABLED_')">disabled</xsl:when>
+									        	<xsl:otherwise>enabled</xsl:otherwise>
+									        </xsl:choose>
+								        </xsl:attribute>
+										<xsl:choose>
+								        	<xsl:when test="starts-with(../../testsuite, 'DISABLED_') or starts-with(text(), 'DISABLED_')">
+								        		<td><input type="checkbox" disabled="disabled"/></td>
+								        	</xsl:when>
+								        	<xsl:otherwise>
+								        		<td><input type="checkbox" checked="checked"/></td>
+								        	</xsl:otherwise>
+								        </xsl:choose>
+							         		<td><xsl:value-of select="text()"/></td>
 											<td>Never</td>
 											<td>0.0</td>
 											<td><a title="Run test" id="Run.{../../testsuite}.{text()}" href=""></a></td>
 											<td><span></span></td>
 											<td></td>
-										</tr>
+										</tr>	
 									</xsl:for-each>
 								</tbody>
 							</table>

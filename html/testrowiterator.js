@@ -77,8 +77,19 @@ TestRowIterator = function () {
 	};
 	
 	/**
+	 * Filters out rows which represent disabled gtest tests
+	 * @param row
+	 * @returns {Boolean}
+	 */
+	this.enabledGTestFilter = function(row)
+	{
+		var testname = row.getAttribute("id");
+		return !((testname.match(/^DISABLED_.*$/) || testname.match(/^.*\.DISABLED_.*$/)));
+	};
+	
+	/**
 	 * Only operate on rows where the first td element's
-	 * checkbox input control is checked or not
+	 * checkbox input control is checked
 	 * @param row
 	 * @returns {Boolean}
 	 */
