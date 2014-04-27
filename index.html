@@ -3,53 +3,44 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
     <title>Test Monkey by philmccarthy24</title>
   </head>
 
   <body>
-    <div id="container">
+    <header>
       <div class="inner">
+        <h1>Test Monkey</h1>
+        <h2>Google Test web based test runner</h2>
+        <a href="https://github.com/philmccarthy24/testmonkey" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-        <header>
-          <h1>Test Monkey</h1>
-          <h2>Google Test web based test runner</h2>
-        </header>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="test-monkey-v12" class="anchor" href="#test-monkey-v12"><span class="octicon octicon-link"></span></a>Test Monkey v1.2</h1>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/philmccarthy24/testmonkey/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-		  <a href="testmonkey-1.1.jar" id="download-jar" class="button"><span>Download .jar</span></a>
-          <a href="https://github.com/philmccarthy24/testmonkey/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/philmccarthy24/testmonkey" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
+<h2>
+<a name="web-based-test-runner-for-the-google-test-framework" class="anchor" href="#web-based-test-runner-for-the-google-test-framework"><span class="octicon octicon-link"></span></a>Web based test runner for the Google Test framework</h2>
 
-        <hr>
-
-        <section id="main_content">
-          <h1>Test Monkey v1.1</h1>
-
-<h2>Web based test runner for the Google Test framework</h2>
-
-<h3>Overview</h3>
+<h3>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h3>
 
 <p>This software allows C++ test harness applications compiled with the <a href="http://code.google.com/p/googletest">google test library</a> to be run easily, and for unit test results to be clearly displayed in a web browser.</p>
 
-<h3>Screen shots</h3>
-<table>
-<tr>
-<td><a title="List of gtest modules currently under test" href="images/testmonkey_p1.png"><img src="images/testmonkey_p1_sml.png" /></a></td>
-<td><a title="Main test page for a gtest module" href="images/testmonkey_p2.png"><img src="images/testmonkey_p2_sml.png" /></a></td>
-<td><a title="Tests being disabled, run, and failing" href="images/testmonkey_p3.png"><img src="images/testmonkey_p3_sml.png" /></a></td>
-</tr>
-</table>
-
-<h3>Getting started</h3>
+<h3>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting started</h3>
 
 <p>There are two ways to run the application:</p>
 
@@ -62,20 +53,22 @@ and shut the application down.</p>
 
 <p>Note the google test harness executables under test can be updated while the web server is running.</p>
 
-<h4>Specifying test executables</h4>
+<h4>
+<a name="specifying-test-executables" class="anchor" href="#specifying-test-executables"><span class="octicon octicon-link"></span></a>Specifying test executables</h4>
 
 <p>To run the application use:</p>
 
-<pre><code>java -jar testmonkey-1.1.jar path/unit_test_harness1.exe path/unit_test_harness2.exe [Port=Portnum]
+<pre><code>java -jar testmonkey-1.2.jar path/unit_test_harness1.exe path/unit_test_harness2.exe [Port=Portnum]
 </code></pre>
 
 <p>where <em>Port</em> is an optional parameter, and specifies the port the embedded web server will listen on.</p>
 
-<h4>Using a Test Schedule file</h4>
+<h4>
+<a name="using-a-test-schedule-file" class="anchor" href="#using-a-test-schedule-file"><span class="octicon octicon-link"></span></a>Using a Test Schedule file</h4>
 
 <p>To run the application use:</p>
 
-<pre><code>java -jar testmonkey-1.1.jar schedule=tests.xml [Variable=Value] [Port=Portnum]
+<pre><code>java -jar testmonkey-1.2.jar schedule=tests.xml [Variable=Value] [Port=Portnum]
 </code></pre>
 
 <p>where tests.xml is the path to a test schedule xml file that validates against <a href="https://github.com/philmccarthy24/testmonkey/blob/master/UnitTestScheduleSchema.xsd">this schema</a>, and as above
@@ -103,14 +96,16 @@ Note specifying paths with these attributes is optional and <em>unit_test_harnes
 <li>The mandatory <em>enabled</em> attribute (true or false) determines whether the test module is included by Test Monkey or not.</li>
 </ul><p>Note the test schedule file may be updated while Test Monkey is running - any changes will be detected and the file reprocessed.</p>
 
-<h3>The web interface</h3>
+<h3>
+<a name="the-web-interface" class="anchor" href="#the-web-interface"><span class="octicon octicon-link"></span></a>The web interface</h3>
 
 <p>This should be self explanatory! Click on a test module from the list to open the list of tests available (note if only one module
 is under test, the module list is not shown, and only tests available from that single module are displayed). Select and deselect tests
 you wish to run. You may select and deselect all tests, all tests in a suite, or only individual tests.
 Selected tests can then be executed, again either all selected tests, tests in a suite, or only individual tests.</p>
 
-<h3>Building the software</h3>
+<h3>
+<a name="building-the-software" class="anchor" href="#building-the-software"><span class="octicon octicon-link"></span></a>Building the software</h3>
 
 <p>Test Monkey is a Java application. To build it you will need to <a href="http://maven.apache.org/download.cgi">download maven</a>,
 and also get the latest <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">jdk</a> for your platform.
@@ -121,7 +116,8 @@ project is included in the repository. To get going you will need to:</p>
 <li>ensure the maven and java bin directories are on your path</li>
 <li>run "mvn package" from the <em>testmonkey</em> source directory to download all the dependencies to your local maven repository and build
 the single large testmonkey jar file in the <em>target</em> sub-directory. </li>
-</ul><h3>Compatibility</h3>
+</ul><h3>
+<a name="compatibility" class="anchor" href="#compatibility"><span class="octicon octicon-link"></span></a>Compatibility</h3>
 
 <p>The following browsers have been tested:</p>
 
@@ -132,16 +128,34 @@ the single large testmonkey jar file in the <em>target</em> sub-directory. </li>
 <li>Internet Explorer 10 (works with minor display issues)</li>
 </ul><p>Internet Explorer versions prior to 10 are not supported due to Microsoft's historic lack of web standards compliance.</p>
 
-<p>Phil McCarthy, April 2013</p>
+<h3>
+<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h3>
+
+<p>Release v1.2 (minor bugfix update):</p>
+
+<ul>
+<li>Improvement in rest server test name parsing, recognition of comments after test case name</li>
+<li>Updates to front end (XSLT and javascript) to prevent gtest test suites or cases marked as DISABLED_ from being enabled or selectable.</li>
+</ul><p>Phil McCarthy, April 2014</p>
         </section>
 
-        <footer>
-          Test Monkey is maintained by <a href="https://github.com/philmccarthy24">philmccarthy24</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
+        <aside id="sidebar">
+          <a href="https://github.com/philmccarthy24/testmonkey/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/philmccarthy24/testmonkey/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
 
-        
+          <p class="repo-owner"><a href="https://github.com/philmccarthy24/testmonkey"></a> is maintained by <a href="https://github.com/philmccarthy24">philmccarthy24</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
       </div>
     </div>
+
+  
   </body>
 </html>
